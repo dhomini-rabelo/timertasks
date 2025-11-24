@@ -1,0 +1,66 @@
+# Use the patterns below
+
+- Use import from 'react' directly, never use React.useState or React.useEffect, use directly useState or useEffect
+- Functional component with props and state
+- Use a state interface and object for multiple state properties
+- use function declaration for component and event handlers
+- prefer arrow functions for event handlers, callbacks and closure functions
+- Event handlers prefixed with "handle"
+- other helper functions without prefix
+- use comments to separate sections
+- no need to use useCallback or useMemo because of React 19
+
+```tsx
+import { useState, useEffect } from 'react';
+
+interface MyComponentProps {
+  name: string;
+}
+
+interface MyComponentState {
+  property1: string;
+  property2: number;
+}
+
+export function MyComponent({ name }: MyComponentProps) {
+  // Used hooks and variables
+  const [state, setState] = useState<MyComponentState>({
+    property1: 'Initial Value',
+    property2: 0,
+  });
+  const isFirstRender = useRef(true);
+  const doesProperty1HaveTheInitialValue = state.property1 === 'Initial Value';
+
+  // Effects
+  useEffect(() => {
+    console.log('Component mounted or state changed');
+
+    return () => {
+      console.log('Component unmounted or before state changes');
+    };
+  }, []);
+
+  // Useful functions
+  function otherHelperFunction() {
+    console.log('This is another helper function');
+  }
+
+  // Event Handlers
+  function handleClick() {
+    setState((prevState) => ({
+      ...prevState,
+      property2: prevState.property2 + 1,
+    }));
+    otherHelperFunction();
+  }
+
+  return (
+    <div>
+      <h1 onClick={handleClick}>
+        Hello, World! {isFirstRender.current ? '(First Render)' : ''} {name} - {state.property1} - {state.property2}
+      </h1>
+      <p>This is a sample React component.</p>
+    </div>
+  );
+}
+```
