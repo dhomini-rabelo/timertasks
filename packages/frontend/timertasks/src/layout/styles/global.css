@@ -3,10 +3,14 @@
 
 @theme {
   --color-White: #fff;
-  
-  --color-Green-400: #32B768;
+  --color-Green-100: #D1FAE5;
+  --color-Green-300: #32B768;
+  --color-Green-400: #10B981;
 
+  --color-Black-200: #89909E;
+  --color-Black-300: #4B5563;
   --color-Black-500: #1F2937;
+  --color-Black-700: #1F2937;
 }
 
 * {

@@ -23,7 +23,7 @@ interface MyComponentState {
 }
 
 export function MyComponent({ name }: MyComponentProps) {
-  // Used hooks and variables
+  // Hooks and variables
   const [state, setState] = useState<MyComponentState>({
     property1: 'Initial Value',
     property2: 0,
