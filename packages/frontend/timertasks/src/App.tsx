@@ -1,4 +1,4 @@
-import "./App.css";
+import "./layout/styles/global.css";
 
 function App() {
   return <h1>Hello Vite + React</h1>;
