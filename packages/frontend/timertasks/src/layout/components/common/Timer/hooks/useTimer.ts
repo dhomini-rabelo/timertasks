@@ -1,3 +1,4 @@
+import { addSeconds, differenceInMilliseconds } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
 
 interface UserTimerProps {
@@ -9,15 +10,14 @@ interface TimerState {
   isRunning: boolean;
 }
 
-export function useTimer(
-  { initialMinutes }: UserTimerProps
-) {
+export function useTimer({ initialMinutes }: UserTimerProps) {
   const initialTimeInSeconds = initialMinutes * 60;
   const [state, setState] = useState<TimerState>({
     currentTimeInSeconds: initialTimeInSeconds,
     isRunning: false,
   });
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const endTimeRef = useRef<Date | null>(null);
   
   useEffect(() => {
     return () => {
@@ -31,21 +31,25 @@ export function useTimer(
     if (intervalRef.current) return;
     if (state.currentTimeInSeconds <= 0) return;
 
+    endTimeRef.current = addSeconds(new Date(), state.currentTimeInSeconds)
+
     setState((prev) => ({ ...prev, isRunning: true }));
 
     intervalRef.current = setInterval(() => {
-      setState((prev) => {
-        if (prev.currentTimeInSeconds <= 0) {
-          stop()
-          return { ...prev, isRunning: false, currentTimeInSeconds: 0 };
-        }
+      if (!endTimeRef.current) return;
+      const now = new Date();
+      
+      const millisecondsLeft = differenceInMilliseconds(endTimeRef.current, now);
 
-        console.log(prev.currentTimeInSeconds - 1);
-        return {
-          ...prev,
-          currentTimeInSeconds: prev.currentTimeInSeconds - 1,
-        }
-      });
+      if (millisecondsLeft <= 0) {
+       stop()
+       return  setState((prev) => ({ ...prev, isRunning: false, currentTimeInSeconds: 0 }));
+      }
+
+      setState((prev) => ({
+        ...prev,
+        currentTimeInSeconds: Math.ceil(millisecondsLeft / 1000),
+      }));
     }, 1000);
   }
 
