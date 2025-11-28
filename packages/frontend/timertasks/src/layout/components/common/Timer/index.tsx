@@ -49,7 +49,7 @@ export function Timer({
           className="transition-all duration-1000 ease-linear"
         />
       </svg>
-      <span className="z-10">{`${minutesLeft}:${secondsLeft}`}</span>
+      <span className="z-10 tabular-nums">{`${minutesLeft}:${secondsLeft}`}</span>
     </div>
   );
 }
