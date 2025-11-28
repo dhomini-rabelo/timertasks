@@ -4,8 +4,9 @@ import { useTimer } from "./layout/components/common/Timer/hooks/useTimer";
 import "./layout/styles/global.css";
 
 function App() {
+  const initialTimeInMinutes = 25;
   const { actions: timerActions, state: timerState } = useTimer({
-    initialMinutes: 25,
+    initialMinutes: initialTimeInMinutes,
   });
 
   return (
@@ -14,14 +15,24 @@ function App() {
         <Timer
           className="w-full h-64 text-6xl"
           timerDisplayInSeconds={timerState.currentTimeInSeconds.toString()}
+          initialTimeInMinutes={initialTimeInMinutes}
         />
         <div className="pt-4">
-          <Button
-            className="w-full py-2 text-base font-medium"
-            onClick={timerActions.start}
-          >
-            Start
-          </Button>
+          {timerState.isRunning ? (
+            <Button
+              className="w-full py-2 text-base font-medium"
+              onClick={timerActions.stop}
+            >
+              Stop
+            </Button>
+          ) : (
+            <Button
+              className="w-full py-2 text-base font-medium"
+              onClick={timerActions.start}
+            >
+              Start
+            </Button>
+          )}
         </div>
       </div>
     </div>
