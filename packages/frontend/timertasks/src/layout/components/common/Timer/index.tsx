@@ -1,16 +1,17 @@
-import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface TimerProps {
+  timerDisplayInSeconds: string;
   className?: string;
 }
 
-interface TimerState {
-  timerDisplay: string;
-}
-
-export function Timer({ className }: TimerProps) {
-  const [state] = useState<TimerState>({ timerDisplay: "00:00" });
+export function Timer({ className, timerDisplayInSeconds }: TimerProps) {
+  const minutesLeft = Math.floor(Number(timerDisplayInSeconds) / 60)
+    .toString()
+    .padStart(2, "0");
+  const secondsLeft = (Number(timerDisplayInSeconds) % 60)
+    .toString()
+    .padStart(2, "0");
 
   return (
     <div
@@ -19,7 +20,7 @@ export function Timer({ className }: TimerProps) {
         className
       )}
     >
-      {state.timerDisplay}
+      {`${minutesLeft}:${secondsLeft}`}
     </div>
   );
 }
