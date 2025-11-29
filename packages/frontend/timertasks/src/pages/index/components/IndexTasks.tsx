@@ -12,13 +12,27 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useState } from "react";
 import { Box } from "../../../layout/components/atoms/Box";
 import { useTasks } from "../hooks/useTasks";
 import { IndexAddInput } from "./IndexAddInput";
+import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
+import { IndexFooter } from "./IndexFooter";
 import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
+
+interface IndexTasksState {
+  showCompleted: boolean;
+}
 
 export function IndexTasks() {
   const { state, actions } = useTasks();
+  const [localState, setLocalState] = useState<IndexTasksState>({
+    showCompleted: false,
+  });
+  const activeTasks = state.tasks.filter((task) => !task.completed);
+  const completedTasks = state.tasks.filter((task) => task.completed);
+  const completedCount = completedTasks.length;
+  const totalCount = state.tasks.length;
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -33,6 +47,13 @@ export function IndexTasks() {
     if (over && active.id !== over.id) {
       actions.reorderTasks(active.id as string, over.id as string);
     }
+  }
+
+  function handleToggleShowCompleted() {
+    setLocalState((prev) => ({
+      ...prev,
+      showCompleted: !prev.showCompleted,
+    }));
   }
 
   return (
@@ -53,9 +74,11 @@ export function IndexTasks() {
         />
 
         <div className="flex flex-col gap-3">
-          {state.tasks.length === 0 ? (
+          {activeTasks.length === 0 ? (
             <div className="text-center py-8 text-Black-400">
-              No tasks yet. Add one above!
+              {state.tasks.length > 0
+                ? "All tasks completed!"
+                : "No tasks yet. Add one above!"}
             </div>
           ) : (
             <DndContext
@@ -64,10 +87,10 @@ export function IndexTasks() {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={state.tasks.map((task) => task.id)}
+                items={activeTasks.map((task) => task.id)}
                 strategy={verticalListSortingStrategy}
               >
-                {state.tasks.map((task, index) => (
+                {activeTasks.map((task, index) => (
                   <IndexSortableTaskItem
                     key={task.id}
                     task={task}
@@ -86,6 +109,21 @@ export function IndexTasks() {
             </DndContext>
           )}
         </div>
+
+        <IndexFooter
+          completedCount={completedCount}
+          totalCount={totalCount}
+          showCompleted={localState.showCompleted}
+          onToggleShowCompleted={handleToggleShowCompleted}
+        />
+
+        {localState.showCompleted && completedTasks.length > 0 && (
+          <div className="flex flex-col gap-3">
+            {completedTasks.map((task) => (
+              <IndexCompletedTaskItem key={task.id} task={task} />
+            ))}
+          </div>
+        )}
       </div>
     </Box>
   );
