@@ -1,9 +1,13 @@
+import { Logo } from "../../layout/components/atoms/Logo";
 import { IndexTasks } from "./components/IndexTasks";
 import { IndexTimer } from "./components/IndexTimer";
 
 export function IndexPage() {
   return (
-    <div className="body-df min-h-screen flex items-center justify-center p-8">
+    <div className="body-df min-h-screen flex flex-col items-center justify-center p-8">
+      <div className="flex w-full justify-center pt-2 pb-8">
+        <Logo />
+      </div>
       <div className="flex flex-col md:flex-row items-center justify-center gap-16 w-full">
         <div className="shrink-0 md:self-start pt-4">
           <IndexTimer />
