@@ -13,6 +13,7 @@ interface IndexSortableTaskItemProps {
   task: Task;
   isEditing: boolean;
   editingTaskTitle: string;
+  isActive: boolean;
   onToggle: (id: string) => void;
   onEdit: (id: string, title: string) => void;
   onDelete: (id: string) => void;
@@ -25,6 +26,7 @@ export function IndexSortableTaskItem({
   task,
   isEditing,
   editingTaskTitle,
+  isActive,
   onToggle,
   onEdit,
   onDelete,
@@ -52,7 +54,11 @@ export function IndexSortableTaskItem({
     <div
       ref={setNodeRef}
       style={style}
-      className="group flex items-center justify-between p-4 rounded-[12px] bg-white border border-Black-600/30 hover:border-Green-400/50 transition-all shadow-sm hover:shadow-md"
+      className={`group flex items-center justify-between p-4 rounded-[12px] bg-white border transition-all shadow-sm hover:shadow-md ${
+        isActive
+          ? "border-Green-400 bg-Green-50/30"
+          : "border-Black-600/30 hover:border-Green-400/50"
+      }`}
     >
       {isEditing ? (
         <IndexEditInput
@@ -72,11 +78,15 @@ export function IndexSortableTaskItem({
               <GripVertical className="w-5 h-5" />
             </div>
             <div
-              onClick={() => onToggle(task.id)}
-              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center cursor-pointer transition-colors shrink-0 ${
+              onClick={() => isActive && onToggle(task.id)}
+              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors shrink-0 ${
+                isActive ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+              } ${
                 task.completed
                   ? "bg-Green-400 border-Green-400"
-                  : "border-Black-400 hover:border-Green-400"
+                  : isActive
+                  ? "border-Black-400 hover:border-Green-400"
+                  : "border-Black-300"
               }`}
             >
               {task.completed && (
@@ -87,7 +97,9 @@ export function IndexSortableTaskItem({
               className={`text-sm font-medium transition-colors break-all ${
                 task.completed
                   ? "text-Black-400 line-through"
-                  : "text-Black-700"
+                  : isActive
+                  ? "text-Black-700 font-semibold"
+                  : "text-Black-500"
               }`}
             >
               {task.title}

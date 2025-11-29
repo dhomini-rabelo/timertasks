@@ -67,12 +67,13 @@ export function IndexTasks() {
                 items={state.tasks.map((task) => task.id)}
                 strategy={verticalListSortingStrategy}
               >
-                {state.tasks.map((task) => (
+                {state.tasks.map((task, index) => (
                   <IndexSortableTaskItem
                     key={task.id}
                     task={task}
                     isEditing={state.editingTaskId === task.id}
                     editingTaskTitle={state.editingTaskTitle}
+                    isActive={index === 0}
                     onToggle={actions.toggleTask}
                     onEdit={actions.startEditingTask}
                     onDelete={actions.deleteTask}
