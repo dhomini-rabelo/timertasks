@@ -1,11 +1,39 @@
-import { Check, Pencil, Trash2 } from "lucide-react";
+import type { DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Box } from "../../../layout/components/atoms/Box";
 import { useTasks } from "../hooks/useTasks";
 import { IndexAddInput } from "./IndexAddInput";
-import { IndexEditInput } from "./IndexEditInput";
+import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
 
 export function IndexTasks() {
   const { state, actions } = useTasks();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      actions.reorderTasks(active.id as string, over.id as string);
+    }
+  }
 
   return (
     <Box className="w-full max-w-[600px] mx-auto p-6 flex flex-col gap-8">
@@ -30,66 +58,31 @@ export function IndexTasks() {
               No tasks yet. Add one above!
             </div>
           ) : (
-            state.tasks.map((task) => (
-              <div
-                key={task.id}
-                className="group flex items-center justify-between p-4 rounded-[12px] bg-white border border-Black-600/30 hover:border-Green-400/50 transition-all shadow-sm hover:shadow-md"
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={state.tasks.map((task) => task.id)}
+                strategy={verticalListSortingStrategy}
               >
-                {state.editingTaskId === task.id ? (
-                  <IndexEditInput
-                    value={state.editingTaskTitle}
-                    onChange={actions.updateEditingTaskTitle}
-                    onSave={actions.saveEditingTask}
-                    onCancel={actions.cancelEditingTask}
+                {state.tasks.map((task) => (
+                  <IndexSortableTaskItem
+                    key={task.id}
+                    task={task}
+                    isEditing={state.editingTaskId === task.id}
+                    editingTaskTitle={state.editingTaskTitle}
+                    onToggle={actions.toggleTask}
+                    onEdit={actions.startEditingTask}
+                    onDelete={actions.deleteTask}
+                    onUpdateEditingTitle={actions.updateEditingTaskTitle}
+                    onSaveEditing={actions.saveEditingTask}
+                    onCancelEditing={actions.cancelEditingTask}
                   />
-                ) : (
-                  <>
-                    <div className="flex items-center gap-4 flex-1">
-                      <div
-                        onClick={() => actions.toggleTask(task.id)}
-                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center cursor-pointer transition-colors shrink-0 ${
-                          task.completed
-                            ? "bg-Green-400 border-Green-400"
-                            : "border-Black-400 hover:border-Green-400"
-                        }`}
-                      >
-                        {task.completed && (
-                          <Check
-                            className="w-4 h-4 text-White"
-                            strokeWidth={3}
-                          />
-                        )}
-                      </div>
-                      <span
-                        className={`text-sm font-medium transition-colors break-all ${
-                          task.completed
-                            ? "text-Black-400 line-through"
-                            : "text-Black-700"
-                        }`}
-                      >
-                        {task.title}
-                      </span>
-                    </div>
-                    <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all">
-                      <button
-                        onClick={() =>
-                          actions.startEditingTask(task.id, task.title)
-                        }
-                        className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
-                      >
-                        <Pencil className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => actions.deleteTask(task.id)}
-                        className="text-Red-400 hover:text-Red-500 transition-all p-2"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))
+                ))}
+              </SortableContext>
+            </DndContext>
           )}
         </div>
       </div>

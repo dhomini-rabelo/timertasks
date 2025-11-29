@@ -102,6 +102,24 @@ export function useTasks() {
     }));
   }
 
+  function reorderTasks(activeId: string, overId: string) {
+    setState((prev) => {
+      const oldIndex = prev.tasks.findIndex((task) => task.id === activeId);
+      const newIndex = prev.tasks.findIndex((task) => task.id === overId);
+
+      if (oldIndex === -1 || newIndex === -1) return prev;
+
+      const newTasks = [...prev.tasks];
+      const [movedTask] = newTasks.splice(oldIndex, 1);
+      newTasks.splice(newIndex, 0, movedTask);
+
+      return {
+        ...prev,
+        tasks: newTasks,
+      };
+    });
+  }
+
   return {
     state: {
       tasks: state.tasks,
@@ -118,6 +136,7 @@ export function useTasks() {
       cancelEditingTask,
       saveEditingTask,
       updateEditingTaskTitle,
+      reorderTasks,
     },
   };
 }
