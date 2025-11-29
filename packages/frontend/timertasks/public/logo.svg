@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="5 10 120 120" width="500" height="500">
+  <!-- Stopwatch Body -->
+  <circle cx="65" cy="75" r="45" fill="none" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Stopwatch Button -->
+  <line x1="65" y1="20" x2="65" y2="30" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="55" y1="20" x2="75" y2="20" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Angled Button/Detail -->
+  <line x1="100" y1="35" x2="110" y2="45" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Checkmark Hands -->
+  <path d="M 45 75 L 60 90 L 90 55" fill="none" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
