@@ -1,26 +1,33 @@
+import { useState } from "react";
 import { Check, X } from "lucide-react";
 import { Input } from "../../../layout/components/atoms/Input";
 
 interface IndexEditInputProps {
-  value: string;
-  onChange: (title: string) => void;
-  onSave: () => void;
+  initialValue: string;
+  onSave: (title: string) => void;
   onCancel: () => void;
 }
 
 export function IndexEditInput({
-  value,
-  onChange,
+  initialValue,
   onSave,
   onCancel,
 }: IndexEditInputProps) {
+  const [title, setTitle] = useState(initialValue);
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onChange(e.target.value);
+    setTitle(e.target.value);
+  }
+
+  function handleSave() {
+    if (title.trim()) {
+      onSave(title);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      onSave();
+      handleSave();
     } else if (e.key === "Escape") {
       onCancel();
     }
@@ -29,14 +36,14 @@ export function IndexEditInput({
   return (
     <div className="flex items-center gap-2 w-full">
       <Input
-        value={value}
+        value={title}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         className="flex-1 h-9"
         autoFocus
       />
       <button
-        onClick={onSave}
+        onClick={handleSave}
         className="p-2 text-Green-300 hover:text-Green-400 transition-colors"
       >
         <Check className="w-5 h-5" />

@@ -7,25 +7,21 @@ import { IndexEditInput } from "./IndexEditInput";
 interface IndexSortableTaskItemProps {
   task: SubTask;
   isEditing: boolean;
-  editingTaskTitle: string;
   isActive: boolean;
   onToggle: (id: string) => void;
-  onEdit: (id: string, title: string) => void;
+  onEdit: (id: string) => void;
   onDelete: (id: string) => void;
-  onUpdateEditingTitle: (title: string) => void;
-  onSaveEditing: () => void;
+  onSaveEditing: (title: string) => void;
   onCancelEditing: () => void;
 }
 
 export function IndexSortableTaskItem({
   task,
   isEditing,
-  editingTaskTitle,
   isActive,
   onToggle,
   onEdit,
   onDelete,
-  onUpdateEditingTitle,
   onSaveEditing,
   onCancelEditing,
 }: IndexSortableTaskItemProps) {
@@ -57,8 +53,7 @@ export function IndexSortableTaskItem({
     >
       {isEditing ? (
         <IndexEditInput
-          value={editingTaskTitle}
-          onChange={onUpdateEditingTitle}
+          initialValue={task.title}
           onSave={onSaveEditing}
           onCancel={onCancelEditing}
         />
@@ -102,7 +97,7 @@ export function IndexSortableTaskItem({
           </div>
           <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all">
             <button
-              onClick={() => onEdit(task.id, task.title)}
+              onClick={() => onEdit(task.id)}
               className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
             >
               <Pencil className="w-5 h-5" />

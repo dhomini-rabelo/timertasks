@@ -67,11 +67,7 @@ export function IndexTasks() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <IndexAddInput
-          value={state.newSubTaskTitle}
-          onChange={actions.updateNewSubTaskTitle}
-          onAdd={actions.addSubTask}
-        />
+        <IndexAddInput onAdd={actions.addSubTask} />
 
         <div className="flex flex-col gap-3">
           {activeSubTasks.length === 0 ? (
@@ -95,12 +91,10 @@ export function IndexTasks() {
                     key={task.id}
                     task={task}
                     isEditing={state.editingSubTaskId === task.id}
-                    editingTaskTitle={state.editingSubTaskTitle}
                     isActive={index === 0}
                     onToggle={actions.toggleSubTask}
                     onEdit={actions.startEditingSubTask}
                     onDelete={actions.deleteSubTask}
-                    onUpdateEditingTitle={actions.updateEditingSubTaskTitle}
                     onSaveEditing={actions.saveEditingSubTask}
                     onCancelEditing={actions.cancelEditingSubTask}
                   />

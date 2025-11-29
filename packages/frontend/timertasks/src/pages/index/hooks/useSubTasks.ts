@@ -8,9 +8,7 @@ export interface SubTask {
 
 interface UseSubTasksState {
   subTasks: SubTask[];
-  newSubTaskTitle: string;
   editingSubTaskId: string | null;
-  editingSubTaskTitle: string;
 }
 
 export function useSubTasks() {
@@ -20,24 +18,21 @@ export function useSubTasks() {
       { id: "2", title: "Review pull requests", completed: true },
       { id: "3", title: "Update dependencies", completed: false },
     ],
-    newSubTaskTitle: "",
     editingSubTaskId: null,
-    editingSubTaskTitle: "",
   });
 
-  function addSubTask() {
-    if (!state.newSubTaskTitle.trim()) return;
+  function addSubTask(title: string) {
+    if (!title.trim()) return;
 
     const newSubTask: SubTask = {
       id: crypto.randomUUID(),
-      title: state.newSubTaskTitle,
+      title: title,
       completed: false,
     };
 
     setState((prev) => ({
       ...prev,
       subTasks: [...prev.subTasks, newSubTask],
-      newSubTaskTitle: "",
     }));
   }
 
@@ -59,18 +54,10 @@ export function useSubTasks() {
     }));
   }
 
-  function updateNewSubTaskTitle(title: string) {
-    setState((prev) => ({
-      ...prev,
-      newSubTaskTitle: title,
-    }));
-  }
-
-  function startEditingSubTask(id: string, currentTitle: string) {
+  function startEditingSubTask(id: string) {
     setState((prev) => ({
       ...prev,
       editingSubTaskId: id,
-      editingSubTaskTitle: currentTitle,
     }));
   }
 
@@ -78,29 +65,20 @@ export function useSubTasks() {
     setState((prev) => ({
       ...prev,
       editingSubTaskId: null,
-      editingSubTaskTitle: "",
     }));
   }
 
-  function saveEditingSubTask() {
-    if (!state.editingSubTaskId || !state.editingSubTaskTitle.trim()) return;
+  function saveEditingSubTask(title: string) {
+    if (!state.editingSubTaskId || !title.trim()) return;
 
     setState((prev) => ({
       ...prev,
       subTasks: prev.subTasks.map((subTask) =>
         subTask.id === prev.editingSubTaskId
-          ? { ...subTask, title: prev.editingSubTaskTitle }
+          ? { ...subTask, title: title }
           : subTask
       ),
       editingSubTaskId: null,
-      editingSubTaskTitle: "",
-    }));
-  }
-
-  function updateEditingSubTaskTitle(title: string) {
-    setState((prev) => ({
-      ...prev,
-      editingSubTaskTitle: title,
     }));
   }
 
@@ -129,19 +107,15 @@ export function useSubTasks() {
   return {
     state: {
       subTasks: state.subTasks,
-      newSubTaskTitle: state.newSubTaskTitle,
       editingSubTaskId: state.editingSubTaskId,
-      editingSubTaskTitle: state.editingSubTaskTitle,
     },
     actions: {
       addSubTask,
       toggleSubTask,
       deleteSubTask,
-      updateNewSubTaskTitle,
       startEditingSubTask,
       cancelEditingSubTask,
       saveEditingSubTask,
-      updateEditingSubTaskTitle,
       reorderSubTasks,
     },
   };
