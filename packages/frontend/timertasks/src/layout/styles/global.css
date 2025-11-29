@@ -21,6 +21,7 @@
 
 * {
   font-family: 'Inter', Arial, sans-serif;
+  user-select: none;
 }
 
 html, body, #root {
