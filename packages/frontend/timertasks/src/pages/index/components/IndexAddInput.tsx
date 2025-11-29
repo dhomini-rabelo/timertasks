@@ -1,14 +1,13 @@
-import { Input } from "../../../layout/components/atoms/Input";
 import { Button } from "../../../layout/components/atoms/Button";
+import { Input } from "../../../layout/components/atoms/Input";
 
-interface AddInputProps {
+interface IndexAddInputProps {
   value: string;
   onChange: (title: string) => void;
   onAdd: () => void;
 }
 
-export function AddInput({ value, onChange, onAdd }: AddInputProps) {
-  // Event Handlers
+export function IndexAddInput({ value, onChange, onAdd }: IndexAddInputProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.value);
   }

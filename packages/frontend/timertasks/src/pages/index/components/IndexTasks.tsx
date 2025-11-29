@@ -1,8 +1,8 @@
 import { Check, Pencil, Trash2 } from "lucide-react";
 import { Box } from "../../../layout/components/atoms/Box";
 import { useTasks } from "../hooks/useTasks";
-import { AddInput } from "./AddInput";
-import { EditInput } from "./EditInput";
+import { IndexAddInput } from "./IndexAddInput";
+import { IndexEditInput } from "./IndexEditInput";
 
 export function IndexTasks() {
   const { state, actions } = useTasks();
@@ -18,7 +18,7 @@ export function IndexTasks() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <AddInput
+        <IndexAddInput
           value={state.newTaskTitle}
           onChange={actions.updateNewTaskTitle}
           onAdd={actions.addTask}
@@ -36,7 +36,7 @@ export function IndexTasks() {
                 className="group flex items-center justify-between p-4 rounded-[12px] bg-white border border-Black-600/30 hover:border-Green-400/50 transition-all shadow-sm hover:shadow-md"
               >
                 {state.editingTaskId === task.id ? (
-                  <EditInput
+                  <IndexEditInput
                     value={state.editingTaskTitle}
                     onChange={actions.updateEditingTaskTitle}
                     onSave={actions.saveEditingTask}

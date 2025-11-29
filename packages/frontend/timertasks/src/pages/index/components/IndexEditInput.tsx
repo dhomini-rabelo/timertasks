@@ -1,20 +1,19 @@
 import { Check, X } from "lucide-react";
 import { Input } from "../../../layout/components/atoms/Input";
 
-interface EditInputProps {
+interface IndexEditInputProps {
   value: string;
   onChange: (title: string) => void;
   onSave: () => void;
   onCancel: () => void;
 }
 
-export function EditInput({
+export function IndexEditInput({
   value,
   onChange,
   onSave,
   onCancel,
-}: EditInputProps) {
-  // Event Handlers
+}: IndexEditInputProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.value);
   }
