@@ -42,12 +42,14 @@ export function IndexTaskItem({
       ) : (
         <>
           <div className="flex items-center gap-4 flex-1">
-            <div
-              {...dragHandleProps}
-              className="cursor-grab active:cursor-grabbing text-Black-400 hover:text-Black-700 transition-colors"
-            >
-              <GripVertical className="w-5 h-5" />
-            </div>
+            {!task.isRunning && (
+              <div
+                {...dragHandleProps}
+                className="cursor-grab active:cursor-grabbing text-Black-400 hover:text-Black-700 transition-colors"
+              >
+                <GripVertical className="w-5 h-5" />
+              </div>
+            )}
             <span
               className={`text-sm font-medium transition-colors break-all ${
                 task.completed
@@ -62,12 +64,14 @@ export function IndexTaskItem({
           </div>
           <div className="flex items-center">
             <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all mr-2">
-              <button
-                onClick={() => onDelete(task.id)}
-                className="text-Red-400 hover:text-Red-500 transition-all p-2"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
+              {!task.isRunning && (
+                <button
+                  onClick={() => onDelete(task.id)}
+                  className="text-Red-400 hover:text-Red-500 transition-all p-2"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              )}
               <button
                 onClick={() => onEdit(task.id)}
                 className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"

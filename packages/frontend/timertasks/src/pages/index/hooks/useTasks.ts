@@ -12,6 +12,7 @@ export interface Task {
   id: string;
   title: string;
   completed: boolean;
+  isRunning: boolean;
   subtasks: SubTask[];
 }
 
@@ -22,9 +23,7 @@ interface UseTasksState {
 export function useTasks() {
   const [state, setState] = useState<UseTasksState>({
     tasks: [
-      { id: "1", title: "Complete project documentation", completed: false, subtasks: [] },
-      { id: "2", title: "Review pull requests", completed: true, subtasks: [] },
-      { id: "3", title: "Update dependencies", completed: false, subtasks: [] },
+      { id: "1", title: "Complete project documentation", completed: false, isRunning: false, subtasks: [] },
     ],
   });
   const activeTask = getActiveTask(state.tasks);
@@ -36,6 +35,7 @@ export function useTasks() {
       id: crypto.randomUUID(),
       title: title,
       completed: false,
+      isRunning: false,
       subtasks: [],
     };
 
@@ -207,6 +207,7 @@ export function useTasks() {
                   ? { ...subtask, isRunning: true }
                   : { ...subtask, isRunning: false }
               ),
+              isRunning: true,
             }
           : task
       ),
