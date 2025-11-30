@@ -43,16 +43,16 @@ export function IndexEditInput({
         autoFocus
       />
       <button
-        onClick={handleSave}
-        className="p-2 text-Green-300 hover:text-Green-400 transition-colors"
-      >
-        <Check className="w-5 h-5" />
-      </button>
-      <button
         onClick={onCancel}
         className="p-2 text-Red-400 hover:text-Red-500 transition-colors"
       >
         <X className="w-5 h-5" />
+      </button>
+      <button
+        onClick={handleSave}
+        className="p-2 text-Green-300 hover:text-Green-400 transition-colors"
+      >
+        <Check className="w-5 h-5" />
       </button>
     </div>
   );
