@@ -10,7 +10,7 @@ interface TimerState {
   isRunning: boolean;
 }
 
-export function useTimer({ initialMinutes }: UserTimerProps) {
+export function useCountdownTimer({ initialMinutes }: UserTimerProps) {
   const initialTimeInSeconds = initialMinutes * 60;
   const [state, setState] = useState<TimerState>({
     currentTimeInSeconds: initialTimeInSeconds,
