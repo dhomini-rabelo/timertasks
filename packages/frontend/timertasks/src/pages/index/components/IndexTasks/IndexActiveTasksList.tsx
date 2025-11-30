@@ -24,6 +24,8 @@ interface IndexActiveTasksListProps {
   onDelete: (id: string) => void;
   onSaveEditing: (title: string) => void;
   onCancelEditing: () => void;
+  onEnterSubtasks: (id: string) => void;
+  showSubtasksArrow: boolean;
 }
 
 export function IndexActiveTasksList({
@@ -34,6 +36,8 @@ export function IndexActiveTasksList({
   onDelete,
   onSaveEditing,
   onCancelEditing,
+  onEnterSubtasks,
+  showSubtasksArrow,
 }: IndexActiveTasksListProps) {
   const activeTask = getActiveTask(activeTasks);
   const sensors = useSensors(
@@ -75,6 +79,8 @@ export function IndexActiveTasksList({
             onDelete={onDelete}
             onSaveEditing={onSaveEditing}
             onCancelEditing={onCancelEditing}
+            onEnterSubtasks={onEnterSubtasks}
+            showSubtasksArrow={showSubtasksArrow}
           />
         ))}
       </SortableContext>

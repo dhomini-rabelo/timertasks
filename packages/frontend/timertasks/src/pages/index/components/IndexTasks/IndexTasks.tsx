@@ -22,17 +22,17 @@ export function IndexTasks() {
   });
   const taskActions = {
     addTask: state.inExecutionTaskId
-      ? fullTaskActions.addTask
-      : fullTaskActions.addSubtask,
+      ? fullTaskActions.addSubtask
+      : fullTaskActions.addTask,
     deleteTask: state.inExecutionTaskId
-      ? fullTaskActions.deleteTask
-      : fullTaskActions.deleteSubtask,
+      ? fullTaskActions.deleteSubtask
+      : fullTaskActions.deleteTask,
     saveEditingTask: state.inExecutionTaskId
-      ? fullTaskActions.saveEditingTask
-      : fullTaskActions.saveEditingSubtask,
+      ? fullTaskActions.saveEditingSubtask
+      : fullTaskActions.saveEditingTask,
     reorderTasks: state.inExecutionTaskId
-      ? fullTaskActions.reorderTasks
-      : fullTaskActions.reorderSubtasks,
+      ? fullTaskActions.reorderSubtasks
+      : fullTaskActions.reorderTasks,
   };
   const listingTasks: ListingTask[] = state.inExecutionTaskId
     ? taskState.tasks.find((task) => task.id === state.inExecutionTaskId)
@@ -71,6 +71,13 @@ export function IndexTasks() {
     }
   }
 
+  function handleEnterSubtasks(taskId: string) {
+    setState((prev) => ({
+      ...prev,
+      inExecutionTaskId: taskId,
+    }));
+  }
+
   return (
     <Box className="w-full max-w-[600px] mx-auto p-6 flex flex-col gap-8">
       <div className="flex flex-col gap-2">
@@ -100,6 +107,8 @@ export function IndexTasks() {
               onDelete={taskActions.deleteTask}
               onSaveEditing={handleSaveEditingTask}
               onCancelEditing={handleCancelEditingTask}
+              onEnterSubtasks={handleEnterSubtasks}
+              showSubtasksArrow={state.inExecutionTaskId === null}
             />
           )}
         </div>

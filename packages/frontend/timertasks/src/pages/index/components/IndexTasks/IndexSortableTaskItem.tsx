@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Pencil, Trash2 } from "lucide-react";
+import { ChevronRight, GripVertical, Pencil, Trash2 } from "lucide-react";
 import type { ListingTask } from "../../utils";
 import { IndexEditInput } from "./IndexEditInput";
 
@@ -12,6 +12,8 @@ interface IndexSortableTaskItemProps {
   onDelete: (id: string) => void;
   onSaveEditing: (title: string) => void;
   onCancelEditing: () => void;
+  onEnterSubtasks: (id: string) => void;
+  showSubtasksArrow: boolean;
 }
 
 export function IndexSortableTaskItem({
@@ -22,6 +24,8 @@ export function IndexSortableTaskItem({
   onDelete,
   onSaveEditing,
   onCancelEditing,
+  onEnterSubtasks,
+  showSubtasksArrow,
 }: IndexSortableTaskItemProps) {
   const {
     attributes,
@@ -77,19 +81,29 @@ export function IndexSortableTaskItem({
               {task.title}
             </span>
           </div>
-          <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all">
-            <button
-              onClick={() => onEdit(task.id)}
-              className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
-            >
-              <Pencil className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => onDelete(task.id)}
-              className="text-Red-400 hover:text-Red-500 transition-all p-2"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
+          <div className="flex items-center">
+            <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all mr-2">
+              <button
+                onClick={() => onEdit(task.id)}
+                className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
+              >
+                <Pencil className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => onDelete(task.id)}
+                className="text-Red-400 hover:text-Red-500 transition-all p-2"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </div>
+            {showSubtasksArrow && (
+              <button
+                onClick={() => onEnterSubtasks(task.id)}
+                className="text-Blue-400 hover:text-Blue-500 transition-all p-2"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </>
       )}
