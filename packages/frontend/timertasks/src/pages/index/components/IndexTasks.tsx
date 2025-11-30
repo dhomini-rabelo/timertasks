@@ -1,24 +1,10 @@
-import type { DragEndEvent } from "@dnd-kit/core";
-import {
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { useState } from "react";
 import { Box } from "../../../layout/components/atoms/Box";
 import { useSubTasks } from "../hooks/useSubTasks";
+import { ActiveTasksList } from "./ActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
 import { IndexFooter } from "./IndexFooter";
-import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
 
 interface IndexTasksState {
   showCompleted: boolean;
@@ -33,21 +19,6 @@ export function IndexTasks() {
   const completedSubTasks = state.subTasks.filter((task) => task.completed);
   const completedCount = completedSubTasks.length;
   const totalCount = state.subTasks.length;
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      actions.reorderSubTasks(active.id as string, over.id as string);
-    }
-  }
 
   function handleToggleShowCompleted() {
     setLocalState((prev) => ({
@@ -77,30 +48,16 @@ export function IndexTasks() {
                 : "No subtasks yet. Add one above!"}
             </div>
           ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={activeSubTasks.map((task) => task.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {activeSubTasks.map((task, index) => (
-                  <IndexSortableTaskItem
-                    key={task.id}
-                    task={task}
-                    isEditing={state.editingSubTaskId === task.id}
-                    isActive={index === 0}
-                    onToggle={actions.toggleSubTask}
-                    onEdit={actions.startEditingSubTask}
-                    onDelete={actions.deleteSubTask}
-                    onSaveEditing={actions.saveEditingSubTask}
-                    onCancelEditing={actions.cancelEditingSubTask}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
+            <ActiveTasksList
+              activeSubTasks={activeSubTasks}
+              editingSubTaskId={state.editingSubTaskId}
+              onDragEnd={actions.reorderSubTasks}
+              onToggle={actions.toggleSubTask}
+              onEdit={actions.startEditingSubTask}
+              onDelete={actions.deleteSubTask}
+              onSaveEditing={actions.saveEditingSubTask}
+              onCancelEditing={actions.cancelEditingSubTask}
+            />
           )}
         </div>
 
