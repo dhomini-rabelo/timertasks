@@ -16,7 +16,7 @@ import { getActiveTask } from "../../hooks/tasks/utils";
 import type { Task } from "../../hooks/useTasks";
 import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
 
-interface ActiveTasksListProps {
+interface IndexActiveTasksListProps {
   activeTasks: Task[];
   editingTaskId: string | null;
   onDragEnd: (activeId: string, overId: string) => void;
@@ -27,7 +27,7 @@ interface ActiveTasksListProps {
   onCancelEditing: () => void;
 }
 
-export function ActiveTasksList({
+export function IndexActiveTasksList({
   activeTasks,
   editingTaskId,
   onDragEnd,
@@ -36,7 +36,7 @@ export function ActiveTasksList({
   onDelete,
   onSaveEditing,
   onCancelEditing,
-}: ActiveTasksListProps) {
+}: IndexActiveTasksListProps) {
   const activeTask = getActiveTask(activeTasks);
   const sensors = useSensors(
     useSensor(PointerSensor),

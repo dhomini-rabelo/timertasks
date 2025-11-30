@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Box } from "../../../../layout/components/atoms/Box";
 import { useTasks } from "../../hooks/useTasks";
-import { ActiveTasksList } from "./ActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
 import { IndexFooter } from "./IndexFooter";
+import { IndexActiveTasksList } from "./IndexIndexActiveTasksList";
 
 interface IndexTasksState {
   showCompleted: boolean;
@@ -71,7 +71,7 @@ export function IndexTasks() {
                 : "No subtasks yet. Add one above!"}
             </div>
           ) : (
-            <ActiveTasksList
+            <IndexActiveTasksList
               activeTasks={activeTasks}
               editingTaskId={state.editingTaskId}
               onDragEnd={taskActions.reorderTasks}
