@@ -12,6 +12,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { getActiveTask } from "../../hooks/tasks/utils";
 import type { SubTask } from "../../hooks/useSubTasks";
 import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
 
@@ -36,6 +37,7 @@ export function ActiveTasksList({
   onSaveEditing,
   onCancelEditing,
 }: ActiveTasksListProps) {
+  const activeTask = getActiveTask(activeSubTasks);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -65,12 +67,12 @@ export function ActiveTasksList({
         items={activeSubTasks.map((task) => task.id)}
         strategy={verticalListSortingStrategy}
       >
-        {activeSubTasks.map((task, index) => (
+        {activeSubTasks.map((task) => (
           <IndexSortableTaskItem
             key={task.id}
             task={task}
             isEditing={editingSubTaskId === task.id}
-            isActive={index === 0}
+            isActive={task.id === activeTask?.id}
             onToggle={onToggle}
             onEdit={onEdit}
             onDelete={onDelete}
