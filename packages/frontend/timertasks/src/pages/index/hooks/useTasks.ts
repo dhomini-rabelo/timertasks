@@ -5,6 +5,7 @@ export interface SubTask {
   id: string;
   title: string;
   completed: boolean;
+  isRunning: boolean;
 }
 
 export interface Task {
@@ -104,6 +105,7 @@ export function useTasks() {
       id: crypto.randomUUID(),
       title: title,
       completed: false,
+      isRunning: false,
     };
 
     setState((prev) => ({
@@ -193,6 +195,24 @@ export function useTasks() {
     });
   }
 
+  function executeSubtask(subtaskId: string) {
+    setState((prev) => ({
+      ...prev,
+      tasks: prev.tasks.map((task) =>
+        task.id === activeTask?.id
+          ? {
+              ...task,
+              subtasks: task.subtasks.map((subtask) =>
+                subtask.id === subtaskId
+                  ? { ...subtask, isRunning: true }
+                  : { ...subtask, isRunning: false }
+              ),
+            }
+          : task
+      ),
+    }));
+  }
+
   return {
     state: {
       tasks: state.tasks,
@@ -208,6 +228,7 @@ export function useTasks() {
       deleteSubtask,
       saveEditingSubtask,
       reorderSubtasks,
+      executeSubtask,
     },
   };
 }

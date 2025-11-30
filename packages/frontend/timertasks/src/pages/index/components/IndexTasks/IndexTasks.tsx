@@ -33,6 +33,7 @@ export function IndexTasks() {
     reorderTasks: state.inExecutionTaskId
       ? fullTaskActions.reorderSubtasks
       : fullTaskActions.reorderTasks,
+    executeSubtask: fullTaskActions.executeSubtask,
   };
   const listingTasks: ListingTask[] = state.inExecutionTaskId
     ? taskState.tasks.find((task) => task.id === state.inExecutionTaskId)
@@ -137,6 +138,7 @@ export function IndexTasks() {
               onSaveEditing={handleSaveEditingTask}
               onCancelEditing={handleCancelEditingTask}
               onEnterSubtasks={handleEnterSubtasks}
+              onExecuteSubtask={taskActions.executeSubtask}
               showSubtasksArrow={state.inExecutionTaskId === null}
             />
           )}

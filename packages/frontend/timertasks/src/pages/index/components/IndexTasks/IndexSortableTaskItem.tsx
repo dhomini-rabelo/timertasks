@@ -13,6 +13,7 @@ interface IndexSortableTaskItemProps {
   onSaveEditing: (title: string) => void;
   onCancelEditing: () => void;
   onEnterSubtasks: (id: string) => void;
+  onExecuteSubtask: (id: string) => void;
   showSubtasksArrow: boolean;
 }
 
@@ -25,6 +26,7 @@ export function IndexSortableTaskItem({
   onSaveEditing,
   onCancelEditing,
   onEnterSubtasks,
+  onExecuteSubtask,
   showSubtasksArrow,
 }: IndexSortableTaskItemProps) {
   const {
@@ -51,6 +53,7 @@ export function IndexSortableTaskItem({
     onDelete,
     onSaveEditing,
     onCancelEditing,
+    onExecuteSubtask,
     dragHandleProps: { ...attributes, ...listeners },
     isDragging,
   };

@@ -12,6 +12,7 @@ interface IndexSubTaskItemProps {
   onDelete: (id: string) => void;
   onSaveEditing: (title: string) => void;
   onCancelEditing: () => void;
+  onExecuteSubtask: (id: string) => void;
   dragHandleProps?: Record<string, unknown>;
 }
 
@@ -23,6 +24,7 @@ export function IndexSubTaskItem({
   onDelete,
   onSaveEditing,
   onCancelEditing,
+  onExecuteSubtask,
   dragHandleProps,
 }: IndexSubTaskItemProps) {
   const initialTimeInMinutes = 10;
@@ -97,11 +99,14 @@ export function IndexSubTaskItem({
 
               {isActive && (
                 <button
-                  onClick={
-                    timerState.isRunning
-                      ? timerActions.stop
-                      : timerActions.start
-                  }
+                  onClick={() => {
+                    if (!timerState.isRunning) {
+                      onExecuteSubtask(task.id);
+                      timerActions.start();
+                    } else {
+                      timerActions.stop();
+                    }
+                  }}
                   className="text-Green-400 hover:text-Green-500 transition-all p-2"
                 >
                   {timerState.isRunning ? (

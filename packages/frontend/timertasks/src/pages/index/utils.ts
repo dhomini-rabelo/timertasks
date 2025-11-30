@@ -2,6 +2,7 @@ export interface ListingTask {
   id: string;
   title: string;
   completed: boolean;
+  isRunning?: boolean;
 }
 
 export function getActiveTask(tasks: ListingTask[]) {
