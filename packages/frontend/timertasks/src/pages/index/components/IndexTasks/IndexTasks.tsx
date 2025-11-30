@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Box } from "../../../../layout/components/atoms/Box";
 import { useTasks } from "../../hooks/useTasks";
+import { IndexActiveTasksList } from "./IndexActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
 import { IndexFooter } from "./IndexFooter";
-import { IndexActiveTasksList } from "./IndexIndexActiveTasksList";
 
 interface IndexTasksState {
   showCompleted: boolean;
@@ -75,7 +75,6 @@ export function IndexTasks() {
               activeTasks={activeTasks}
               editingTaskId={state.editingTaskId}
               onDragEnd={taskActions.reorderTasks}
-              onToggle={taskActions.toggleTask}
               onEdit={handleStartEditingTask}
               onDelete={taskActions.deleteTask}
               onSaveEditing={handleSaveEditingTask}

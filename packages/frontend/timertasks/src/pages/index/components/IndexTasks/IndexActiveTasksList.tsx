@@ -20,7 +20,6 @@ interface IndexActiveTasksListProps {
   activeTasks: Task[];
   editingTaskId: string | null;
   onDragEnd: (activeId: string, overId: string) => void;
-  onToggle: (id: string) => void;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
   onSaveEditing: (title: string) => void;
@@ -31,7 +30,6 @@ export function IndexActiveTasksList({
   activeTasks,
   editingTaskId,
   onDragEnd,
-  onToggle,
   onEdit,
   onDelete,
   onSaveEditing,
@@ -73,7 +71,6 @@ export function IndexActiveTasksList({
             task={task}
             isEditing={editingTaskId === task.id}
             isActive={task.id === activeTask?.id}
-            onToggle={onToggle}
             onEdit={onEdit}
             onDelete={onDelete}
             onSaveEditing={onSaveEditing}
