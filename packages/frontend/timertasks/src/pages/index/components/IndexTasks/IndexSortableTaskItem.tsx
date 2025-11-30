@@ -84,16 +84,16 @@ export function IndexSortableTaskItem({
           <div className="flex items-center">
             <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all mr-2">
               <button
-                onClick={() => onEdit(task.id)}
-                className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
-              >
-                <Pencil className="w-5 h-5" />
-              </button>
-              <button
                 onClick={() => onDelete(task.id)}
                 className="text-Red-400 hover:text-Red-500 transition-all p-2"
               >
                 <Trash2 className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => onEdit(task.id)}
+                className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
+              >
+                <Pencil className="w-5 h-5" />
               </button>
             </div>
             {showSubtasksArrow && (
