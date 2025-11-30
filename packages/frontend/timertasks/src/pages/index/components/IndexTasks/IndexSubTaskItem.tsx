@@ -1,6 +1,6 @@
 import { GripVertical, Pencil, Play, Square, Trash2 } from "lucide-react";
 import { Timer } from "../../../../layout/components/common/Timer";
-import { useCountdownTimer } from "../../../../layout/components/common/Timer/hooks/useCountdownTimer";
+import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { ListingTask } from "../../utils";
 import { IndexEditInput } from "./IndexEditInput";
 
@@ -25,10 +25,8 @@ export function IndexSubTaskItem({
   onCancelEditing,
   dragHandleProps,
 }: IndexSubTaskItemProps) {
-  const initialTimeInMinutes = 25;
-  const { actions: timerActions, state: timerState } = useCountdownTimer({
-    initialMinutes: initialTimeInMinutes,
-  });
+  const initialTimeInMinutes = 10;
+  const { actions: timerActions, state: timerState } = useCountUpTimer();
 
   return (
     <div
