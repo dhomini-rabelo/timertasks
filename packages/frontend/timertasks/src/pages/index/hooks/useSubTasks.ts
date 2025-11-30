@@ -8,7 +8,6 @@ export interface SubTask {
 
 interface UseSubTasksState {
   subTasks: SubTask[];
-  editingSubTaskId: string | null;
 }
 
 export function useSubTasks() {
@@ -18,7 +17,6 @@ export function useSubTasks() {
       { id: "2", title: "Review pull requests", completed: true },
       { id: "3", title: "Update dependencies", completed: false },
     ],
-    editingSubTaskId: null,
   });
 
   function addSubTask(title: string) {
@@ -54,31 +52,16 @@ export function useSubTasks() {
     }));
   }
 
-  function startEditingSubTask(id: string) {
-    setState((prev) => ({
-      ...prev,
-      editingSubTaskId: id,
-    }));
-  }
-
-  function cancelEditingSubTask() {
-    setState((prev) => ({
-      ...prev,
-      editingSubTaskId: null,
-    }));
-  }
-
-  function saveEditingSubTask(title: string) {
-    if (!state.editingSubTaskId || !title.trim()) return;
+  function saveEditingSubTask(id: string, title: string) {
+    if (!title.trim()) return;
 
     setState((prev) => ({
       ...prev,
       subTasks: prev.subTasks.map((subTask) =>
-        subTask.id === prev.editingSubTaskId
+        subTask.id === id
           ? { ...subTask, title: title }
           : subTask
       ),
-      editingSubTaskId: null,
     }));
   }
 
@@ -107,14 +90,11 @@ export function useSubTasks() {
   return {
     state: {
       subTasks: state.subTasks,
-      editingSubTaskId: state.editingSubTaskId,
     },
     actions: {
       addSubTask,
       toggleSubTask,
       deleteSubTask,
-      startEditingSubTask,
-      cancelEditingSubTask,
       saveEditingSubTask,
       reorderSubTasks,
     },

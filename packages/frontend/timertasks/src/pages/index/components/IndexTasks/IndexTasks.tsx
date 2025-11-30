@@ -8,12 +8,14 @@ import { IndexFooter } from "./IndexFooter";
 
 interface IndexTasksState {
   showCompleted: boolean;
+  editingSubTaskId: string | null;
 }
 
 export function IndexTasks() {
   const { state: taskState, actions: taskActions } = useSubTasks();
   const [state, setState] = useState<IndexTasksState>({
     showCompleted: false,
+    editingSubTaskId: null,
   });
   const activeSubTasks = taskState.subTasks.filter((task) => !task.completed);
   const completedSubTasks = taskState.subTasks.filter((task) => task.completed);
@@ -25,6 +27,27 @@ export function IndexTasks() {
       ...prev,
       showCompleted: !prev.showCompleted,
     }));
+  }
+
+  function handleStartEditingSubTask(id: string) {
+    setState((prev) => ({
+      ...prev,
+      editingSubTaskId: id,
+    }));
+  }
+
+  function handleCancelEditingSubTask() {
+    setState((prev) => ({
+      ...prev,
+      editingSubTaskId: null,
+    }));
+  }
+
+  function handleSaveEditingSubTask(title: string) {
+    if (state.editingSubTaskId) {
+      taskActions.saveEditingSubTask(state.editingSubTaskId, title);
+      handleCancelEditingSubTask();
+    }
   }
 
   return (
@@ -50,13 +73,13 @@ export function IndexTasks() {
           ) : (
             <ActiveTasksList
               activeSubTasks={activeSubTasks}
-              editingSubTaskId={taskState.editingSubTaskId}
+              editingSubTaskId={state.editingSubTaskId}
               onDragEnd={taskActions.reorderSubTasks}
               onToggle={taskActions.toggleSubTask}
-              onEdit={taskActions.startEditingSubTask}
+              onEdit={handleStartEditingSubTask}
               onDelete={taskActions.deleteSubTask}
-              onSaveEditing={taskActions.saveEditingSubTask}
-              onCancelEditing={taskActions.cancelEditingSubTask}
+              onSaveEditing={handleSaveEditingSubTask}
+              onCancelEditing={handleCancelEditingSubTask}
             />
           )}
         </div>
