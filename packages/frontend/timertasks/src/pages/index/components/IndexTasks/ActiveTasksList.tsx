@@ -12,7 +12,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { SubTask } from "../hooks/useSubTasks";
+import type { SubTask } from "../../hooks/useSubTasks";
 import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
 
 interface ActiveTasksListProps {

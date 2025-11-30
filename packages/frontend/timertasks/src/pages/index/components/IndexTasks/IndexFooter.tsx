@@ -1,4 +1,4 @@
-import { Button } from "../../../layout/components/atoms/Button";
+import { Button } from "../../../../layout/components/atoms/Button";
 
 interface IndexFooterProps {
   completedCount: number;

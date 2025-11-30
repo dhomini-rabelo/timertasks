@@ -1,5 +1,5 @@
 import { Logo } from "../../layout/components/atoms/Logo";
-import { IndexTasks } from "./components/IndexTasks";
+import { IndexTasks } from "./components/IndexTasks/IndexTasks";
 import { IndexTimer } from "./components/IndexTimer";
 
 export function IndexPage() {

@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import type { SubTask } from "../hooks/useSubTasks";
+import type { SubTask } from "../../hooks/useSubTasks";
 
 interface IndexCompletedTaskItemProps {
   task: SubTask;

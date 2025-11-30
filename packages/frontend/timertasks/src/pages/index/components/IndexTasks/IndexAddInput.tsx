@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "../../../layout/components/atoms/Button";
-import { Input } from "../../../layout/components/atoms/Input";
+import { Button } from "../../../../layout/components/atoms/Button";
+import { Input } from "../../../../layout/components/atoms/Input";
 
 interface IndexAddInputProps {
   onAdd: (title: string) => void;
