@@ -87,6 +87,10 @@ export function useTasks() {
 
       if (oldIndex === -1 || newIndex === -1) return prev;
 
+      if (prev.tasks[oldIndex].isRunning || prev.tasks[newIndex].isRunning) {
+        return prev;
+      }
+
       const newTasks = [...prev.tasks];
       const [movedTask] = newTasks.splice(oldIndex, 1);
       newTasks.splice(newIndex, 0, movedTask);
@@ -180,6 +184,10 @@ export function useTasks() {
       const newIndex = task.subtasks.findIndex((s) => s.id === overId);
 
       if (oldIndex === -1 || newIndex === -1) return prev;
+
+      if (task.subtasks[oldIndex].isRunning || task.subtasks[newIndex].isRunning) {
+        return prev;
+      }
 
       const newSubtasks = [...task.subtasks];
       const [movedSubtask] = newSubtasks.splice(oldIndex, 1);
