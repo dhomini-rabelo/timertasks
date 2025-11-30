@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getActiveTask } from "./tasks/utils";
+import { getActiveTask } from "../utils";
 
 export interface SubTask {
   id: string;

@@ -1,8 +1,8 @@
 import { Check } from "lucide-react";
-import type { Task } from "../../hooks/useTasks";
+import type { ListingTask } from "../../utils";
 
 interface IndexCompletedTaskItemProps {
-  task: Task;
+  task: ListingTask;
 }
 
 export function IndexCompletedTaskItem({ task }: IndexCompletedTaskItemProps) {

@@ -12,12 +12,12 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { getActiveTask } from "../../hooks/tasks/utils";
-import type { Task } from "../../hooks/useTasks";
+import type { ListingTask } from "../../utils";
+import { getActiveTask } from "../../utils";
 import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
 
 interface IndexActiveTasksListProps {
-  activeTasks: Task[];
+  activeTasks: ListingTask[];
   editingTaskId: string | null;
   onDragEnd: (activeId: string, overId: string) => void;
   onEdit: (id: string) => void;

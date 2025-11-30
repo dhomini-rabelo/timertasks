@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box } from "../../../../layout/components/atoms/Box";
 import { useTasks } from "../../hooks/useTasks";
+import type { ListingTask } from "../../utils";
 import { IndexActiveTasksList } from "./IndexActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
@@ -9,18 +10,38 @@ import { IndexFooter } from "./IndexFooter";
 interface IndexTasksState {
   showCompleted: boolean;
   editingTaskId: string | null;
+  inExecutionTaskId: string | null;
 }
 
 export function IndexTasks() {
-  const { state: taskState, actions: taskActions } = useTasks();
+  const { state: taskState, actions: fullTaskActions } = useTasks();
   const [state, setState] = useState<IndexTasksState>({
     showCompleted: false,
     editingTaskId: null,
+    inExecutionTaskId: null,
   });
-  const activeTasks = taskState.tasks.filter((task) => !task.completed);
-  const completedTasks = taskState.tasks.filter((task) => task.completed);
+  const taskActions = {
+    addTask: state.inExecutionTaskId
+      ? fullTaskActions.addTask
+      : fullTaskActions.addSubtask,
+    deleteTask: state.inExecutionTaskId
+      ? fullTaskActions.deleteTask
+      : fullTaskActions.deleteSubtask,
+    saveEditingTask: state.inExecutionTaskId
+      ? fullTaskActions.saveEditingTask
+      : fullTaskActions.saveEditingSubtask,
+    reorderTasks: state.inExecutionTaskId
+      ? fullTaskActions.reorderTasks
+      : fullTaskActions.reorderSubtasks,
+  };
+  const listingTasks: ListingTask[] = state.inExecutionTaskId
+    ? taskState.tasks.find((task) => task.id === state.inExecutionTaskId)
+        ?.subtasks || []
+    : taskState.tasks;
+  const activeTasks = listingTasks.filter((task) => !task.completed);
+  const completedTasks = listingTasks.filter((task) => task.completed);
   const completedCount = completedTasks.length;
-  const totalCount = taskState.tasks.length;
+  const totalCount = listingTasks.length;
 
   function handleToggleShowCompleted() {
     setState((prev) => ({
