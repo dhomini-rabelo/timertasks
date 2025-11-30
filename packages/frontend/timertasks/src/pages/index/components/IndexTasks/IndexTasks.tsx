@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box } from "../../../../layout/components/atoms/Box";
 import { useTasks } from "../../hooks/useTasks";
-import type { ListingTask } from "../../utils";
+import { getActiveTask, type ListingTask } from "../../utils";
 import { IndexActiveTasksList } from "./IndexActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
@@ -43,6 +43,7 @@ export function IndexTasks() {
   const completedCount = completedTasks.length;
   const totalCount = listingTasks.length;
   const listingMode = state.inExecutionTaskId ? "subtasks" : "tasks";
+  const activeTask = getActiveTask(taskState.tasks);
 
   function handleToggleShowCompleted() {
     setState((prev) => ({
@@ -79,15 +80,40 @@ export function IndexTasks() {
     }));
   }
 
+  function handleExitSubtasks() {
+    setState((prev) => ({
+      ...prev,
+      inExecutionTaskId: null,
+    }));
+  }
+
   return (
     <Box className="w-full max-w-[600px] mx-auto p-6 flex flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-bold text-Black-700">
-          {listingMode === "subtasks" ? "Subtasks" : "Tasks"}
+        <h2 className="text-2xl font-bold text-Black-700 flex items-center gap-1.5">
+          {listingMode === "subtasks" && activeTask ? (
+            <>
+              <span
+                className="text-Black-400 cursor-pointer hover:text-Black-600 transition-colors"
+                onClick={handleExitSubtasks}
+              >
+                Tasks
+              </span>
+              <span className="text-Black-300">/</span>
+              <span
+                className="truncate max-w-[350px] text-xl"
+                title={activeTask.title}
+              >
+                {activeTask.title}
+              </span>
+            </>
+          ) : (
+            "Tasks"
+          )}
         </h2>
         <p className="text-Black-300 text-sm">
-          Manage your daily subtasks efficiently, keep track of debugging time,
-          and avoid wasting time on easy tasks.
+          Manage your daily tasks efficiently, keep track of debugging time, and
+          avoid wasting time on easy tasks.
         </p>
       </div>
 
@@ -97,9 +123,9 @@ export function IndexTasks() {
         <div className="flex flex-col gap-3">
           {activeTasks.length === 0 ? (
             <div className="text-center py-8 text-Black-400">
-              {taskState.tasks.length > 0
-                ? "All subtasks completed!"
-                : "No subtasks yet. Add one above!"}
+              {listingTasks.length > 0
+                ? "All tasks completed!"
+                : "No tasks yet. Add one above!"}
             </div>
           ) : (
             <IndexActiveTasksList
