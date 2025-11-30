@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Box } from "../../../../layout/components/atoms/Box";
-import { useSubTasks } from "../../hooks/useSubTasks";
+import { useTasks } from "../../hooks/useTasks";
 import { ActiveTasksList } from "./ActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
@@ -8,19 +8,19 @@ import { IndexFooter } from "./IndexFooter";
 
 interface IndexTasksState {
   showCompleted: boolean;
-  editingSubTaskId: string | null;
+  editingTaskId: string | null;
 }
 
 export function IndexTasks() {
-  const { state: taskState, actions: taskActions } = useSubTasks();
+  const { state: taskState, actions: taskActions } = useTasks();
   const [state, setState] = useState<IndexTasksState>({
     showCompleted: false,
-    editingSubTaskId: null,
+    editingTaskId: null,
   });
-  const activeSubTasks = taskState.subTasks.filter((task) => !task.completed);
-  const completedSubTasks = taskState.subTasks.filter((task) => task.completed);
-  const completedCount = completedSubTasks.length;
-  const totalCount = taskState.subTasks.length;
+  const activeTasks = taskState.tasks.filter((task) => !task.completed);
+  const completedTasks = taskState.tasks.filter((task) => task.completed);
+  const completedCount = completedTasks.length;
+  const totalCount = taskState.tasks.length;
 
   function handleToggleShowCompleted() {
     setState((prev) => ({
@@ -29,24 +29,24 @@ export function IndexTasks() {
     }));
   }
 
-  function handleStartEditingSubTask(id: string) {
+  function handleStartEditingTask(id: string) {
     setState((prev) => ({
       ...prev,
-      editingSubTaskId: id,
+      editingTaskId: id,
     }));
   }
 
-  function handleCancelEditingSubTask() {
+  function handleCancelEditingTask() {
     setState((prev) => ({
       ...prev,
-      editingSubTaskId: null,
+      editingTaskId: null,
     }));
   }
 
-  function handleSaveEditingSubTask(title: string) {
-    if (state.editingSubTaskId) {
-      taskActions.saveEditingSubTask(state.editingSubTaskId, title);
-      handleCancelEditingSubTask();
+  function handleSaveEditingTask(title: string) {
+    if (state.editingTaskId) {
+      taskActions.saveEditingTask(state.editingTaskId, title);
+      handleCancelEditingTask();
     }
   }
 
@@ -61,25 +61,25 @@ export function IndexTasks() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <IndexAddInput onAdd={taskActions.addSubTask} />
+        <IndexAddInput onAdd={taskActions.addTask} />
 
         <div className="flex flex-col gap-3">
-          {activeSubTasks.length === 0 ? (
+          {activeTasks.length === 0 ? (
             <div className="text-center py-8 text-Black-400">
-              {taskState.subTasks.length > 0
+              {taskState.tasks.length > 0
                 ? "All subtasks completed!"
                 : "No subtasks yet. Add one above!"}
             </div>
           ) : (
             <ActiveTasksList
-              activeSubTasks={activeSubTasks}
-              editingSubTaskId={state.editingSubTaskId}
-              onDragEnd={taskActions.reorderSubTasks}
-              onToggle={taskActions.toggleSubTask}
-              onEdit={handleStartEditingSubTask}
-              onDelete={taskActions.deleteSubTask}
-              onSaveEditing={handleSaveEditingSubTask}
-              onCancelEditing={handleCancelEditingSubTask}
+              activeTasks={activeTasks}
+              editingTaskId={state.editingTaskId}
+              onDragEnd={taskActions.reorderTasks}
+              onToggle={taskActions.toggleTask}
+              onEdit={handleStartEditingTask}
+              onDelete={taskActions.deleteTask}
+              onSaveEditing={handleSaveEditingTask}
+              onCancelEditing={handleCancelEditingTask}
             />
           )}
         </div>
@@ -91,9 +91,9 @@ export function IndexTasks() {
           onToggleShowCompleted={handleToggleShowCompleted}
         />
 
-        {state.showCompleted && completedSubTasks.length > 0 && (
+        {state.showCompleted && completedTasks.length > 0 && (
           <div className="flex flex-col gap-3">
-            {completedSubTasks.map((task) => (
+            {completedTasks.map((task) => (
               <IndexCompletedTaskItem key={task.id} task={task} />
             ))}
           </div>

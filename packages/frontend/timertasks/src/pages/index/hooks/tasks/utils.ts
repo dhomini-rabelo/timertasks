@@ -1,6 +1,6 @@
-import type { SubTask } from "../useSubTasks";
+import type { Task } from "../useTasks";
 
-export function getActiveTask(tasks: SubTask[]) {
+export function getActiveTask(tasks: Task[]) {
   const firstActiveTaskInTheList = tasks.find((task) => !task.completed);
   return firstActiveTaskInTheList;
 }

@@ -1,11 +1,11 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Check, GripVertical, Pencil, Trash2 } from "lucide-react";
-import type { SubTask } from "../../hooks/useSubTasks";
+import type { Task } from "../../hooks/useTasks";
 import { IndexEditInput } from "./IndexEditInput";
 
 interface IndexSortableTaskItemProps {
-  task: SubTask;
+  task: Task;
   isEditing: boolean;
   isActive: boolean;
   onToggle: (id: string) => void;

@@ -13,12 +13,12 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { getActiveTask } from "../../hooks/tasks/utils";
-import type { SubTask } from "../../hooks/useSubTasks";
+import type { Task } from "../../hooks/useTasks";
 import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
 
 interface ActiveTasksListProps {
-  activeSubTasks: SubTask[];
-  editingSubTaskId: string | null;
+  activeTasks: Task[];
+  editingTaskId: string | null;
   onDragEnd: (activeId: string, overId: string) => void;
   onToggle: (id: string) => void;
   onEdit: (id: string) => void;
@@ -28,8 +28,8 @@ interface ActiveTasksListProps {
 }
 
 export function ActiveTasksList({
-  activeSubTasks,
-  editingSubTaskId,
+  activeTasks,
+  editingTaskId,
   onDragEnd,
   onToggle,
   onEdit,
@@ -37,7 +37,7 @@ export function ActiveTasksList({
   onSaveEditing,
   onCancelEditing,
 }: ActiveTasksListProps) {
-  const activeTask = getActiveTask(activeSubTasks);
+  const activeTask = getActiveTask(activeTasks);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -53,7 +53,7 @@ export function ActiveTasksList({
     }
   }
 
-  if (activeSubTasks.length === 0) {
+  if (activeTasks.length === 0) {
     return null;
   }
 
@@ -64,14 +64,14 @@ export function ActiveTasksList({
       onDragEnd={handleDragEnd}
     >
       <SortableContext
-        items={activeSubTasks.map((task) => task.id)}
+        items={activeTasks.map((task) => task.id)}
         strategy={verticalListSortingStrategy}
       >
-        {activeSubTasks.map((task) => (
+        {activeTasks.map((task) => (
           <IndexSortableTaskItem
             key={task.id}
             task={task}
-            isEditing={editingSubTaskId === task.id}
+            isEditing={editingTaskId === task.id}
             isActive={task.id === activeTask?.id}
             onToggle={onToggle}
             onEdit={onEdit}
