@@ -35,6 +35,9 @@ export function IndexTasks() {
       : fullTaskActions.reorderTasks,
     executeSubtask: fullTaskActions.executeSubtask,
     stopSubtask: fullTaskActions.stopSubtask,
+    toggleTask: state.inExecutionTaskId
+      ? fullTaskActions.toggleSubtask
+      : fullTaskActions.toggleTask,
   };
   const listingTasks: ListingTask[] = state.inExecutionTaskId
     ? taskState.tasks.find((task) => task.id === state.inExecutionTaskId)
@@ -46,6 +49,11 @@ export function IndexTasks() {
   const totalCount = listingTasks.length;
   const listingMode = state.inExecutionTaskId ? "subtasks" : "tasks";
   const activeTask = getActiveTask(taskState.tasks);
+
+  const canFinishTask =
+    state.inExecutionTaskId &&
+    listingTasks.length > 0 &&
+    listingTasks.every((subtask) => subtask.completed);
 
   function handleToggleShowCompleted() {
     setState((prev) => ({
@@ -87,6 +95,13 @@ export function IndexTasks() {
       ...prev,
       inExecutionTaskId: null,
     }));
+  }
+
+  function handleFinishTask() {
+    if (state.inExecutionTaskId) {
+      fullTaskActions.toggleTask(state.inExecutionTaskId);
+      handleExitSubtasks();
+    }
   }
 
   return (
@@ -141,6 +156,7 @@ export function IndexTasks() {
               onEnterSubtasks={handleEnterSubtasks}
               onExecuteSubtask={taskActions.executeSubtask}
               onStopSubtask={taskActions.stopSubtask}
+              onToggleSubtask={taskActions.toggleTask}
               showSubtasksArrow={state.inExecutionTaskId === null}
             />
           )}
@@ -150,7 +166,9 @@ export function IndexTasks() {
           completedCount={completedCount}
           totalCount={totalCount}
           showCompleted={state.showCompleted}
+          canFinishTask={!!canFinishTask}
           onToggleShowCompleted={handleToggleShowCompleted}
+          onFinishTask={handleFinishTask}
         />
 
         {state.showCompleted && completedTasks.length > 0 && (

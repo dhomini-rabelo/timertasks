@@ -1,4 +1,11 @@
-import { GripVertical, Pencil, Play, Square, Trash2 } from "lucide-react";
+import {
+  Check,
+  GripVertical,
+  Pencil,
+  Play,
+  Square,
+  Trash2,
+} from "lucide-react";
 import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask } from "../../hooks/useTasks";
@@ -15,6 +22,7 @@ interface IndexSubTaskItemProps {
   onCancelEditing: () => void;
   onExecuteSubtask: (id: string) => void;
   onStopSubtask?: (id: string) => void;
+  onToggleSubtask: (id: string) => void;
   dragHandleProps?: Record<string, unknown>;
 }
 
@@ -28,6 +36,7 @@ export function IndexSubTaskItem({
   onCancelEditing,
   onExecuteSubtask,
   onStopSubtask,
+  onToggleSubtask,
   dragHandleProps,
 }: IndexSubTaskItemProps) {
   const initialTimeInMinutes = 10;
@@ -108,24 +117,36 @@ export function IndexSubTaskItem({
               </div>
 
               {isActive && (
-                <button
-                  onClick={() => {
-                    if (!timerState.isRunning) {
-                      onExecuteSubtask(task.id);
-                      timerActions.start();
-                    } else {
-                      onStopSubtask?.(task.id);
-                      timerActions.stop();
-                    }
-                  }}
-                  className="text-Green-400 hover:text-Green-500 transition-all p-2"
-                >
-                  {timerState.isRunning ? (
-                    <Square className="w-5 h-5 fill-current" />
-                  ) : (
-                    <Play className="w-5 h-5 fill-current" />
+                <div className="flex items-center">
+                  <button
+                    onClick={() => {
+                      if (!timerState.isRunning) {
+                        onExecuteSubtask(task.id);
+                        timerActions.start();
+                      } else {
+                        onStopSubtask?.(task.id);
+                        timerActions.stop();
+                      }
+                    }}
+                    className="text-Green-400 hover:text-Green-500 transition-all p-2"
+                  >
+                    {timerState.isRunning ? (
+                      <Square className="w-5 h-5 fill-current" />
+                    ) : (
+                      <Play className="w-5 h-5 fill-current" />
+                    )}
+                  </button>
+
+                  {timerState.isRunning && (
+                    <button
+                      onClick={() => onToggleSubtask(task.id)}
+                      className="transition-all p-2"
+                      title="Mark as complete"
+                    >
+                      <Check className="w-5 h-5 text-Green-400" />
+                    </button>
                   )}
-                </button>
+                </div>
               )}
             </div>
           </div>
