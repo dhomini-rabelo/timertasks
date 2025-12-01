@@ -2,7 +2,7 @@ import { GripVertical, Pencil, Play, Square, Trash2 } from "lucide-react";
 import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask } from "../../hooks/useTasks";
-import { calculateTotalTimeInSeconds } from "../../utils";
+import { calculateTotalTimeInSeconds, shouldAutoStart } from "../../utils";
 import { IndexEditInput } from "./IndexEditInput";
 
 interface IndexSubTaskItemProps {
@@ -31,11 +31,9 @@ export function IndexSubTaskItem({
   dragHandleProps,
 }: IndexSubTaskItemProps) {
   const initialTimeInMinutes = 10;
-  const lastEvent = task.timeEvents[task.timeEvents.length - 1];
-  const shouldAutoStart = lastEvent?.type === "start";
   const { actions: timerActions, state: timerState } = useCountUpTimer({
     initialSeconds: calculateTotalTimeInSeconds(task.timeEvents),
-    autoStart: shouldAutoStart,
+    autoStart: shouldAutoStart(task.timeEvents),
   });
 
   return (

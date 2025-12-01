@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { SubTask } from "../../hooks/useTasks";
+import type { SubTask, Task } from "../../hooks/useTasks";
 import type { ListingTask } from "../../utils";
 import { IndexSubTaskItem } from "./IndexSubTaskItem";
 import { IndexTaskItem } from "./IndexTaskItem";
@@ -65,7 +65,13 @@ export function IndexSortableTaskItem({
   return (
     <div ref={setNodeRef} style={style}>
       {showSubtasksArrow ? (
-        <IndexTaskItem {...commonProps} onEnterSubtasks={onEnterSubtasks} />
+        <IndexTaskItem
+          {...{
+            ...commonProps,
+            task: task as Task,
+          }}
+          onEnterSubtasks={onEnterSubtasks}
+        />
       ) : (
         <IndexSubTaskItem
           {...{
