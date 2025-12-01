@@ -1,5 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import type { SubTask } from "../../hooks/useTasks";
 import type { ListingTask } from "../../utils";
 import { IndexSubTaskItem } from "./IndexSubTaskItem";
 import { IndexTaskItem } from "./IndexTaskItem";
@@ -14,6 +15,7 @@ interface IndexSortableTaskItemProps {
   onCancelEditing: () => void;
   onEnterSubtasks: (id: string) => void;
   onExecuteSubtask: (id: string) => void;
+  onStopSubtask: (id: string) => void;
   showSubtasksArrow: boolean;
 }
 
@@ -27,6 +29,7 @@ export function IndexSortableTaskItem({
   onCancelEditing,
   onEnterSubtasks,
   onExecuteSubtask,
+  onStopSubtask,
   showSubtasksArrow,
 }: IndexSortableTaskItemProps) {
   const {
@@ -54,6 +57,7 @@ export function IndexSortableTaskItem({
     onSaveEditing,
     onCancelEditing,
     onExecuteSubtask,
+    onStopSubtask,
     dragHandleProps: { ...attributes, ...listeners },
     isDragging,
   };
@@ -63,7 +67,12 @@ export function IndexSortableTaskItem({
       {showSubtasksArrow ? (
         <IndexTaskItem {...commonProps} onEnterSubtasks={onEnterSubtasks} />
       ) : (
-        <IndexSubTaskItem {...commonProps} />
+        <IndexSubTaskItem
+          {...{
+            ...commonProps,
+            task: task as SubTask,
+          }}
+        />
       )}
     </div>
   );

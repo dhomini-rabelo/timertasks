@@ -1,11 +1,11 @@
 import { GripVertical, Pencil, Play, Square, Trash2 } from "lucide-react";
 import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
-import type { ListingTask } from "../../utils";
+import type { SubTask } from "../../hooks/useTasks";
 import { IndexEditInput } from "./IndexEditInput";
 
 interface IndexSubTaskItemProps {
-  task: ListingTask;
+  task: SubTask;
   isEditing: boolean;
   isActive: boolean;
   onEdit: (id: string) => void;
@@ -13,6 +13,7 @@ interface IndexSubTaskItemProps {
   onSaveEditing: (title: string) => void;
   onCancelEditing: () => void;
   onExecuteSubtask: (id: string) => void;
+  onStopSubtask?: (id: string) => void;
   dragHandleProps?: Record<string, unknown>;
 }
 
@@ -25,6 +26,7 @@ export function IndexSubTaskItem({
   onSaveEditing,
   onCancelEditing,
   onExecuteSubtask,
+  onStopSubtask,
   dragHandleProps,
 }: IndexSubTaskItemProps) {
   const initialTimeInMinutes = 10;
@@ -108,6 +110,7 @@ export function IndexSubTaskItem({
                       onExecuteSubtask(task.id);
                       timerActions.start();
                     } else {
+                      onStopSubtask?.(task.id);
                       timerActions.stop();
                     }
                   }}

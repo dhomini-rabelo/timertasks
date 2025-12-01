@@ -26,6 +26,7 @@ interface IndexActiveTasksListProps {
   onCancelEditing: () => void;
   onEnterSubtasks: (id: string) => void;
   onExecuteSubtask: (id: string) => void;
+  onStopSubtask: (id: string) => void;
   showSubtasksArrow: boolean;
 }
 
@@ -39,6 +40,7 @@ export function IndexActiveTasksList({
   onCancelEditing,
   onEnterSubtasks,
   onExecuteSubtask,
+  onStopSubtask,
   showSubtasksArrow,
 }: IndexActiveTasksListProps) {
   const activeTask = getActiveTask(activeTasks);
@@ -83,6 +85,7 @@ export function IndexActiveTasksList({
             onCancelEditing={onCancelEditing}
             onEnterSubtasks={onEnterSubtasks}
             onExecuteSubtask={onExecuteSubtask}
+            onStopSubtask={onStopSubtask}
             showSubtasksArrow={showSubtasksArrow}
           />
         ))}

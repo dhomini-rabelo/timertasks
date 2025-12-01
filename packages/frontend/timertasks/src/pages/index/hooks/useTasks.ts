@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { getActiveTask } from "../utils";
 
+
+export type SubTaskTimeEvent = {
+  type: 'start' | 'stop' | 'complete';
+  createdAt: Date;
+}
+
+
 export interface SubTask {
   id: string;
   title: string;
   completed: boolean;
   isRunning: boolean;
+  timeEvents: SubTaskTimeEvent[];
 }
 
 export interface Task {
@@ -110,6 +118,7 @@ export function useTasks() {
       title: title,
       completed: false,
       isRunning: false,
+      timeEvents: [],
     };
 
     setState((prev) => ({
@@ -212,8 +221,31 @@ export function useTasks() {
               ...task,
               subtasks: task.subtasks.map((subtask) =>
                 subtask.id === subtaskId
-                  ? { ...subtask, isRunning: true }
+                  ? { ...subtask, isRunning: true, timeEvents: [...subtask.timeEvents, { createdAt: new Date(), type: 'start' }] }
                   : { ...subtask, isRunning: false }
+              ),
+              isRunning: true,
+            }
+          : task
+      ),
+    }));
+  }
+
+  function stopSubtask(subtaskId: string) {
+    setState((prev) => ({
+      ...prev,
+      tasks: prev.tasks.map((task) =>
+        task.id === activeTask?.id
+          ? {
+              ...task,
+              subtasks: task.subtasks.map((subtask) =>
+                subtask.id === subtaskId
+                  ? {
+                      ...subtask,
+                      isRunning: true,
+                      timeEvents: [...subtask.timeEvents, { createdAt: new Date(), type: 'stop' }],
+                    }
+                  : subtask
               ),
               isRunning: true,
             }
@@ -238,6 +270,7 @@ export function useTasks() {
       saveEditingSubtask,
       reorderSubtasks,
       executeSubtask,
+      stopSubtask,
     },
   };
 }
