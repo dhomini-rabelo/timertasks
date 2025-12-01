@@ -30,9 +30,7 @@ interface UseTasksState {
 
 export function useTasks() {
   const [state, setState] = useState<UseTasksState>({
-    tasks: [
-      { id: "1", title: "Complete project documentation", completed: false, isRunning: false, subtasks: [] },
-    ],
+    tasks: [],
   });
   const activeTask = getActiveTask(state.tasks);
 
