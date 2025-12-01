@@ -6,21 +6,21 @@ interface TimerState {
   isRunning: boolean;
 }
 
-export function useCountUpTimer() {
+interface UseCountUpTimerOptions {
+  initialSeconds?: number;
+  autoStart?: boolean;
+}
+
+export function useCountUpTimer({
+  initialSeconds = 0,
+  autoStart = false,
+}: UseCountUpTimerOptions = {}) {
   const [state, setState] = useState<TimerState>({
-    currentTimeInSeconds: 0,
-    isRunning: false,
+    currentTimeInSeconds: initialSeconds,
+    isRunning: autoStart,
   });
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const startTimeRef = useRef<Date | null>(null);
-  
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
 
   function start() {
     if (intervalRef.current) return;
@@ -66,6 +66,19 @@ export function useCountUpTimer() {
       isRunning: false,
     });
   }
+
+  useEffect(() => {
+    if (autoStart) {
+      start();
+    }
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
 
   return {
     actions: {
