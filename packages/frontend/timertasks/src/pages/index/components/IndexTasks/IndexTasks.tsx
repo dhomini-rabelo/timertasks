@@ -47,7 +47,7 @@ export function IndexTasks() {
   const completedTasks = listingTasks.filter((task) => task.completed);
   const completedCount = completedTasks.length;
   const totalCount = listingTasks.length;
-  const listingMode = state.inExecutionTaskId ? "subtasks" : "tasks";
+  const listingMode = state.inExecutionTaskId ? "subtasks" : "tasks-group";
   const activeTask = getActiveTask(taskState.tasks);
 
   const canFinishTask =
@@ -124,6 +124,8 @@ export function IndexTasks() {
                 {activeTask.title}
               </span>
             </>
+          ) : listingMode === "tasks-group" ? (
+            "Task Groups"
           ) : (
             "Tasks"
           )}
@@ -135,12 +137,16 @@ export function IndexTasks() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <IndexAddInput onAdd={taskActions.addTask} />
+        <IndexAddInput onAdd={taskActions.addTask} listingMode={listingMode} />
 
         <div className="flex flex-col gap-3">
           {activeTasks.length === 0 ? (
             <div className="text-center py-8 text-Black-400">
-              {listingTasks.length > 0
+              {listingMode === "tasks-group"
+                ? listingTasks.length > 0
+                  ? "All tasks completed!"
+                  : "No task group registered"
+                : listingTasks.length > 0
                 ? "All tasks completed!"
                 : "No tasks yet. Add one above!"}
             </div>

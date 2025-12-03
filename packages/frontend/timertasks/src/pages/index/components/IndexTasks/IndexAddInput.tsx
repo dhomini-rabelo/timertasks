@@ -4,9 +4,10 @@ import { Input } from "../../../../layout/components/atoms/Input";
 
 interface IndexAddInputProps {
   onAdd: (title: string) => void;
+  listingMode: "tasks-group" | "subtasks";
 }
 
-export function IndexAddInput({ onAdd }: IndexAddInputProps) {
+export function IndexAddInput({ onAdd, listingMode }: IndexAddInputProps) {
   const [title, setTitle] = useState("");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -29,7 +30,11 @@ export function IndexAddInput({ onAdd }: IndexAddInputProps) {
   return (
     <div className="flex gap-3">
       <Input
-        placeholder="Add a new task..."
+        placeholder={
+          listingMode === "tasks-group"
+            ? "Create task group..."
+            : "Add a new task..."
+        }
         value={title}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
