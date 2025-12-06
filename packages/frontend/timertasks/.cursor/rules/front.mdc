@@ -35,6 +35,7 @@ We have a minimalist Vite TS application that has a timer, todo list, tasks and 
 - other helper functions without prefix
 - use comments to separate sections
 - no need to use useCallback or useMemo because of React 19
+- Do not create a function directly in the component props
 
 ```tsx
 import { useState, useEffect } from 'react';
