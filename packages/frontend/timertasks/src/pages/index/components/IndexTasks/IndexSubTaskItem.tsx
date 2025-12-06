@@ -46,7 +46,6 @@ export function IndexSubTaskItem({
   onToggleSubtask,
   dragHandleProps,
 }: IndexSubTaskItemProps) {
-  const initialTimeInMinutes = 10;
   const { actions: timerActions, state: timerState } = useCountUpTimer({
     initialSeconds: calculateTotalTimeInSeconds(task.timeEvents),
     autoStart: shouldAutoStart(task.timeEvents),
@@ -58,16 +57,19 @@ export function IndexSubTaskItem({
     alertMinutes: "5",
   });
 
-  function startTimerOnlyIfGlobalTimerIsRunning() {
-    if (isGlobalTimerRunning) {
-      timerActions.start();
-    }
+  function playAlertSound() {
+    const alarmAudio = new Audio("/alarm-loop.mp3");
+    const restartPositionInSeconds = 0;
+    alarmAudio.currentTime = restartPositionInSeconds;
+    alarmAudio.play().catch(() => {});
   }
 
   function handleToggleSubtaskTimer() {
     if (!timerState.isRunning) {
-      onExecuteSubtask(task.id);
-      startTimerOnlyIfGlobalTimerIsRunning();
+      if (isGlobalTimerRunning) {
+        onExecuteSubtask(task.id);
+        timerActions.start();
+      }
     } else {
       onStopSubtask?.(task.id);
       timerActions.stop();
@@ -75,8 +77,32 @@ export function IndexSubTaskItem({
   }
 
   useEffect(() => {
-    handleToggleSubtaskTimer();
-  }, [isGlobalTimerRunning]);
+    if (isActive && task.isRunning) {
+      handleToggleSubtaskTimer();
+    }
+  }, [isGlobalTimerRunning, task.isRunning]);
+
+  useEffect(() => {
+    const alertTimerInSeconds = Number(state.alertMinutes) * 60;
+    const isAlertTimerReached =
+      timerState.currentTimeInSeconds === alertTimerInSeconds;
+    const hasAlertTimeBeenReachedAndPassedHalfWayToTheNextAlertTime =
+      timerState.currentTimeInSeconds > alertTimerInSeconds
+        ? timerState.currentTimeInSeconds % alertTimerInSeconds ===
+          alertTimerInSeconds / 2
+        : false;
+    const hasAlertTimeBeenReachedAndAnotherAlertTimeIsPassed =
+      timerState.currentTimeInSeconds > alertTimerInSeconds
+        ? timerState.currentTimeInSeconds % alertTimerInSeconds === 0
+        : false;
+    const shouldPlayAlert =
+      isAlertTimerReached ||
+      hasAlertTimeBeenReachedAndPassedHalfWayToTheNextAlertTime ||
+      hasAlertTimeBeenReachedAndAnotherAlertTimeIsPassed;
+    if (shouldPlayAlert) {
+      playAlertSound();
+    }
+  }, [timerState.currentTimeInSeconds, state.alertMinutes]);
 
   return (
     <div
@@ -111,7 +137,7 @@ export function IndexSubTaskItem({
                     <Timer
                       className="w-full h-full text-xs"
                       timerDisplayInSeconds={timerState.currentTimeInSeconds.toString()}
-                      initialTimeInMinutes={initialTimeInMinutes}
+                      initialTimeInMinutes={Number(state.alertMinutes)}
                     />
                   </div>
                 </div>
