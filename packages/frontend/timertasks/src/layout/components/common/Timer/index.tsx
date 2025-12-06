@@ -6,6 +6,18 @@ interface TimerProps {
   initialTimeInMinutes: number;
 }
 
+function getPercentage(totalSeconds: number, currentSeconds: number) {
+  if (totalSeconds === 0) {
+    return 0;
+  } else if (currentSeconds < totalSeconds) {
+    return currentSeconds / totalSeconds;
+  } else if (currentSeconds === totalSeconds) {
+    return 1;
+  } else {
+    return (currentSeconds % totalSeconds) / totalSeconds;
+  }
+}
+
 export function Timer({
   className,
   timerDisplayInSeconds,
@@ -22,7 +34,7 @@ export function Timer({
   const circumference = 2 * Math.PI * radius;
   const totalSeconds = initialTimeInMinutes * 60;
   const currentSeconds = Number(timerDisplayInSeconds);
-  const percentage = totalSeconds > 0 ? currentSeconds / totalSeconds : 0;
+  const percentage = getPercentage(totalSeconds, currentSeconds);
   const strokeDashoffset = circumference - percentage * circumference;
 
   return (
