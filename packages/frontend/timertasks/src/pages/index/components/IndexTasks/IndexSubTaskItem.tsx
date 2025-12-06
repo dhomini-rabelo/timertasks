@@ -1,3 +1,4 @@
+import { useSetAtom } from "jotai";
 import {
   Check,
   GripVertical,
@@ -18,6 +19,7 @@ import {
 } from "../../utils";
 import { IndexAlertSelect } from "./IndexAlertSelect";
 import { IndexEditInput } from "./IndexEditInput";
+import { errorMessageAtom } from "./state";
 
 interface IndexSubTaskItemState {
   alertMinutes: string;
@@ -78,12 +80,15 @@ export function IndexSubTaskItem({
     alertMinutes: "1",
   });
   const isFirstExecution = useRef(true);
+  const dispatchErrorMessage = useSetAtom(errorMessageAtom);
 
   function handleToggleSubtaskTimer() {
     if (!timerState.isRunning) {
       if (isGlobalTimerRunning) {
         onExecuteSubtask(task.id);
         timerActions.start();
+      } else {
+        dispatchErrorMessage("Global timer is not running");
       }
     } else {
       onStopSubtask?.(task.id);

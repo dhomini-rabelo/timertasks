@@ -1,10 +1,23 @@
-import { atom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { TriangleAlert } from "lucide-react";
-
-const erroMessageAtom = atom("");
+import { useEffect } from "react";
+import { errorMessageAtom } from "./state";
 
 export function IndexErrorMessage() {
-  const errorMessage = useAtomValue(erroMessageAtom);
+  const [errorMessage, setErrorMessage] = useAtom(errorMessageAtom);
+
+  useEffect(() => {
+    if (errorMessage) {
+      const threeSecondsInMilliseconds = 3000;
+      const timeout = setTimeout(() => {
+        setErrorMessage("");
+      }, threeSecondsInMilliseconds);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [errorMessage]);
 
   if (!errorMessage) {
     return null;
