@@ -11,7 +11,11 @@ import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask } from "../../hooks/useTasks";
 import { useCountdownTimerState } from "../../states/countdownTimer";
-import { calculateTotalTimeInSeconds, shouldAutoStart } from "../../utils";
+import {
+  calculateTotalTimeInSeconds,
+  formatTime,
+  shouldAutoStart,
+} from "../../utils";
 import { IndexAlertSelect } from "./IndexAlertSelect";
 import { IndexEditInput } from "./IndexEditInput";
 
@@ -54,15 +58,25 @@ export function IndexSubTaskItem({
     (store) => store.state.isRunning
   );
   const [state, setState] = useState<IndexSubTaskItemState>({
-    alertMinutes: "5",
+    alertMinutes: "1",
   });
   const isFirstExecution = useRef(true);
 
-  function playAlertSound() {
+  function playAlertSound(currentTimeInSeconds: number) {
     const alarmAudio = new Audio("/alarm-loop.mp3");
     const restartPositionInSeconds = 0;
     alarmAudio.currentTime = restartPositionInSeconds;
-    alarmAudio.play().catch(() => {});
+    alarmAudio
+      .play()
+      .catch(() => {})
+      .then(() => {
+        new Notification("Task Alert", {
+          icon: "/logo.svg",
+          body: `Task time: ${formatTime(currentTimeInSeconds)}`,
+          requireInteraction: false,
+          silent: true,
+        });
+      });
   }
 
   function handleToggleSubtaskTimer() {
@@ -103,7 +117,7 @@ export function IndexSubTaskItem({
       hasAlertTimeBeenReachedAndPassedHalfWayToTheNextAlertTime ||
       hasAlertTimeBeenReachedAndAnotherAlertTimeIsPassed;
     if (shouldPlayAlert) {
-      playAlertSound();
+      playAlertSound(timerState.currentTimeInSeconds);
     }
   }, [timerState.currentTimeInSeconds, state.alertMinutes]);
 
