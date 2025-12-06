@@ -1,67 +1,107 @@
 import { addSeconds, differenceInMilliseconds } from 'date-fns';
-import { useEffect, useRef, useState } from 'react';
+import { create } from 'zustand';
 
-interface UserTimerProps {
+interface CountdownTimerState {
   initialMinutes: number;
-}
-
-interface TimerState {
   currentTimeInSeconds: number;
   isRunning: boolean;
 }
 
-export function useCountdownTimer({ initialMinutes }: UserTimerProps) {
-  const initialTimeInSeconds = initialMinutes * 60;
-  const [state, setState] = useState<TimerState>({
-    currentTimeInSeconds: initialTimeInSeconds,
-    isRunning: false,
-  });
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const endTimeRef = useRef<Date | null>(null);
-  
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
+interface CountdownTimerActions {
+  start: () => void;
+  stop: () => void;
+  reset: () => void;
+}
+
+interface CountdownTimerStore {
+  state: CountdownTimerState;
+  actions: CountdownTimerActions;
+}
+
+const secondsPerMinute = 60;
+const millisecondsPerSecond = 1000;
+const initialMinutes = 25;
+
+
+const intervalRef: { current: ReturnType<typeof setInterval> | null } = {
+  current: null,
+};
+const endTimeRef: { current: Date | null } = { current: null };
+
+export const useCountdownTimer = create<CountdownTimerStore>((set, get) => {
+  function setState(partial: Partial<CountdownTimerState>) {
+    set((store) => ({
+      state: {
+        initialMinutes:
+          partial.initialMinutes ?? store.state.initialMinutes,
+        currentTimeInSeconds:
+          partial.currentTimeInSeconds ?? store.state.currentTimeInSeconds,
+        isRunning: partial.isRunning ?? store.state.isRunning,
+      },
+      actions: store.actions,
+    }));
+  }
 
   function start() {
-    if (intervalRef.current) return;
-    if (state.currentTimeInSeconds <= 0) return;
+    const store = get();
+    if (intervalRef.current) {
+      return;
+    }
+    if (store.state.currentTimeInSeconds <= 0) {
+      return;
+    }
 
-    endTimeRef.current = addSeconds(new Date(), state.currentTimeInSeconds)
+    endTimeRef.current = addSeconds(
+      new Date(),
+      store.state.currentTimeInSeconds,
+    );
 
-    setState((prev) => ({ ...prev, isRunning: true }));
+    setState({
+      isRunning: true,
+    });
 
     intervalRef.current = setInterval(() => {
-      if (!endTimeRef.current) return;
-      const now = new Date();
-      
-      const millisecondsLeft = differenceInMilliseconds(endTimeRef.current, now);
-
-      if (millisecondsLeft <= 0) {
-       stop()
-       return  setState((prev) => ({ ...prev, isRunning: false, currentTimeInSeconds: 0 }));
+      if (!endTimeRef.current) {
+        return;
       }
 
-      setState((prev) => ({
-        ...prev,
-        currentTimeInSeconds: Math.ceil(millisecondsLeft / 1000),
-      }));
-    }, 1000);
+      const millisecondsLeft = differenceInMilliseconds(
+        endTimeRef.current,
+        new Date(),
+      );
+
+      if (millisecondsLeft <= 0) {
+        stop();
+        setState({
+          currentTimeInSeconds: 0,
+        });
+        return;
+      }
+
+      setState({
+        currentTimeInSeconds: Math.ceil(
+          millisecondsLeft / millisecondsPerSecond,
+        ),
+      });
+    }, millisecondsPerSecond);
   }
 
   function stop() {
-    if (!state.isRunning) return;
-    
+    const store = get();
+    if (!store.state.isRunning && !intervalRef.current) {
+      return;
+    }
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
 
-    setState((prev) => ({ ...prev, isRunning: false }));
+    endTimeRef.current = null;
+
+    setState({
+      isRunning: false,
+    });
   }
 
   function reset() {
@@ -69,22 +109,27 @@ export function useCountdownTimer({ initialMinutes }: UserTimerProps) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    
+
+    endTimeRef.current = null;
+
+    const initialSeconds = get().state.initialMinutes * secondsPerMinute;
+
     setState({
-      currentTimeInSeconds: initialTimeInSeconds,
+      currentTimeInSeconds: initialSeconds,
       isRunning: false,
     });
   }
 
   return {
+    state: {
+      initialMinutes,
+      currentTimeInSeconds: initialMinutes * secondsPerMinute,
+      isRunning: false,
+    },
     actions: {
       start,
       stop,
       reset,
     },
-    state: {
-      currentTimeInSeconds: state.currentTimeInSeconds,
-      isRunning: state.isRunning,
-    },
   };
-}
+});
