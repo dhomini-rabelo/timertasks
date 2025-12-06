@@ -37,6 +37,23 @@ interface IndexSubTaskItemProps {
   dragHandleProps?: Record<string, unknown>;
 }
 
+function playAlertSound(currentTimeInSeconds: number) {
+  const alarmAudio = new Audio("/alarm-loop.mp3");
+  const restartPositionInSeconds = 0;
+  alarmAudio.currentTime = restartPositionInSeconds;
+  alarmAudio
+    .play()
+    .catch(() => {})
+    .then(() => {
+      new Notification("Task Alert", {
+        icon: "/logo.svg",
+        body: `Task time: ${formatTime(currentTimeInSeconds)}`,
+        requireInteraction: false,
+        silent: true,
+      });
+    });
+}
+
 export function IndexSubTaskItem({
   task,
   isEditing,
@@ -61,23 +78,6 @@ export function IndexSubTaskItem({
     alertMinutes: "1",
   });
   const isFirstExecution = useRef(true);
-
-  function playAlertSound(currentTimeInSeconds: number) {
-    const alarmAudio = new Audio("/alarm-loop.mp3");
-    const restartPositionInSeconds = 0;
-    alarmAudio.currentTime = restartPositionInSeconds;
-    alarmAudio
-      .play()
-      .catch(() => {})
-      .then(() => {
-        new Notification("Task Alert", {
-          icon: "/logo.svg",
-          body: `Task time: ${formatTime(currentTimeInSeconds)}`,
-          requireInteraction: false,
-          silent: true,
-        });
-      });
-  }
 
   function handleToggleSubtaskTimer() {
     if (!timerState.isRunning) {

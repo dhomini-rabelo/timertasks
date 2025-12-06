@@ -1,7 +1,25 @@
 import { RotateCcw } from "lucide-react";
+import { useEffect } from "react";
 import Button from "../../../layout/components/atoms/Button";
 import { Timer } from "../../../layout/components/common/Timer";
 import { useCountdownTimerState } from "../states/countdownTimer";
+
+function playAlertSound() {
+  const alarmAudio = new Audio("/car-alarm.mp3");
+  const restartPositionInSeconds = 0;
+  alarmAudio.currentTime = restartPositionInSeconds;
+  alarmAudio
+    .play()
+    .catch(() => {})
+    .then(() => {
+      new Notification("Timer Alert", {
+        icon: "/logo.svg",
+        body: "Countdown finished.",
+        requireInteraction: false,
+        silent: true,
+      });
+    });
+}
 
 export function IndexTimer() {
   const start = useCountdownTimerState((store) => store.actions.start);
@@ -18,6 +36,13 @@ export function IndexTimer() {
   const secondsPerMinute = 60;
   const hasTimerStarted =
     currentTimeInSeconds !== initialMinutes * secondsPerMinute;
+
+  useEffect(() => {
+    if (currentTimeInSeconds === 0) {
+      playAlertSound();
+      return;
+    }
+  }, [currentTimeInSeconds]);
 
   return (
     <div className="w-64">
