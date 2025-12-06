@@ -151,20 +151,22 @@ export function IndexSubTaskItem({
 
               {isActive && (
                 <div className="flex items-center">
-                  <div className="mr-2">
-                    <Select
-                      options={alertOptions}
-                      value={state.alertMinutes}
-                      onValueChange={(value) =>
-                        setState((previousState) => ({
-                          ...previousState,
-                          alertMinutes: value,
-                        }))
-                      }
-                      startIcon={<Bell className="h-4 w-4 text-Yellow-400" />}
-                      className="h-10 rounded-full px-3 py-0 bg-Black-50 text-Black-700"
-                    />
-                  </div>
+                  {!task.isRunning && (
+                    <div className="mr-2">
+                      <Select
+                        options={alertOptions}
+                        value={state.alertMinutes}
+                        onValueChange={(value) =>
+                          setState((previousState) => ({
+                            ...previousState,
+                            alertMinutes: value,
+                          }))
+                        }
+                        startIcon={<Bell className="h-4 w-4 text-Yellow-400" />}
+                        className="h-10 rounded-full px-3 py-0 bg-Black-50 text-Black-700"
+                      />
+                    </div>
+                  )}
                   <button
                     onClick={() => {
                       if (!timerState.isRunning) {
