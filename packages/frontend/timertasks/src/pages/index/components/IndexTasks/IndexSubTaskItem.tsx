@@ -1,5 +1,4 @@
 import {
-  Bell,
   Check,
   GripVertical,
   Pencil,
@@ -8,12 +7,12 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Select } from "../../../../layout/components/atoms/Select";
 import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask } from "../../hooks/useTasks";
 import { useCountdownTimerState } from "../../states/countdownTimer";
 import { calculateTotalTimeInSeconds, shouldAutoStart } from "../../utils";
+import { IndexAlertSelect } from "./IndexAlertSelect";
 import { IndexEditInput } from "./IndexEditInput";
 
 interface IndexSubTaskItemState {
@@ -58,11 +57,6 @@ export function IndexSubTaskItem({
   const [state, setState] = useState<IndexSubTaskItemState>({
     alertMinutes: "5",
   });
-  const alertOptions = [
-    { label: "5 min", value: "5" },
-    { label: "10 min", value: "10" },
-    { label: "15 min", value: "15" },
-  ];
 
   function startTimerOnlyIfGlobalTimerIsRunning() {
     if (isGlobalTimerRunning) {
@@ -70,12 +64,19 @@ export function IndexSubTaskItem({
     }
   }
 
-  useEffect(() => {
-    if (!isGlobalTimerRunning) {
-      timerActions.stop();
+  function handleToggleSubtaskTimer() {
+    if (!timerState.isRunning) {
+      onExecuteSubtask(task.id);
+      startTimerOnlyIfGlobalTimerIsRunning();
     } else {
-      timerActions.start();
+      onStopSubtask?.(task.id);
+      timerActions.stop();
     }
+  }
+
+  useEffect(() => {
+    console.log("isGlobalTimerRunning", isGlobalTimerRunning);
+    handleToggleSubtaskTimer();
   }, [isGlobalTimerRunning]);
 
   return (
@@ -153,30 +154,19 @@ export function IndexSubTaskItem({
                 <div className="flex items-center">
                   {!task.isRunning && (
                     <div className="mr-2">
-                      <Select
-                        options={alertOptions}
+                      <IndexAlertSelect
                         value={state.alertMinutes}
-                        onValueChange={(value) =>
+                        onChange={(value) =>
                           setState((previousState) => ({
                             ...previousState,
                             alertMinutes: value,
                           }))
                         }
-                        startIcon={<Bell className="h-4 w-4 text-Yellow-400" />}
-                        className="h-10 rounded-full px-3 py-0 bg-Black-50 text-Black-700"
                       />
                     </div>
                   )}
                   <button
-                    onClick={() => {
-                      if (!timerState.isRunning) {
-                        onExecuteSubtask(task.id);
-                        startTimerOnlyIfGlobalTimerIsRunning();
-                      } else {
-                        onStopSubtask?.(task.id);
-                        timerActions.stop();
-                      }
-                    }}
+                    onClick={handleToggleSubtaskTimer}
                     className="text-Green-400 hover:text-Green-500 transition-all p-2"
                   >
                     {timerState.isRunning ? (
