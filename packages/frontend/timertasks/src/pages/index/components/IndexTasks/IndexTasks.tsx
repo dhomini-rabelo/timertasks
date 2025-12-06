@@ -5,6 +5,7 @@ import { getActiveTask, type ListingTask } from "../../utils";
 import { IndexActiveTasksList } from "./IndexActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
+import { IndexErrorMessage } from "./IndexErrorMessage";
 import { IndexFooter } from "./IndexFooter";
 
 interface IndexTasksState {
@@ -138,6 +139,8 @@ export function IndexTasks() {
 
       <div className="flex flex-col gap-4">
         <IndexAddInput onAdd={taskActions.addTask} listingMode={listingMode} />
+
+        <IndexErrorMessage />
 
         <div className="flex flex-col gap-3">
           {activeTasks.length === 0 ? (
