@@ -21,7 +21,7 @@ interface CountdownTimerStore {
 
 const secondsPerMinute = 60;
 const millisecondsPerSecond = 1000;
-const initialMinutes = 1;
+const initialMinutes = 25;
 
 
 const intervalRef: { current: ReturnType<typeof setInterval> | null } = {
