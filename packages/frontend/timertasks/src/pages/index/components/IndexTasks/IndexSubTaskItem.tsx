@@ -6,9 +6,11 @@ import {
   Square,
   Trash2,
 } from "lucide-react";
+import { useEffect } from "react";
 import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask } from "../../hooks/useTasks";
+import { useCountdownTimerState } from "../../states/countdownTimer";
 import { calculateTotalTimeInSeconds, shouldAutoStart } from "../../utils";
 import { IndexEditInput } from "./IndexEditInput";
 
@@ -44,6 +46,23 @@ export function IndexSubTaskItem({
     initialSeconds: calculateTotalTimeInSeconds(task.timeEvents),
     autoStart: shouldAutoStart(task.timeEvents),
   });
+  const isGlobalTimerRunning = useCountdownTimerState(
+    (store) => store.state.isRunning
+  );
+
+  function startTimerOnlyIfGlobalTimerIsRunning() {
+    if (isGlobalTimerRunning) {
+      timerActions.start();
+    }
+  }
+
+  useEffect(() => {
+    if (!isGlobalTimerRunning) {
+      timerActions.stop();
+    } else {
+      timerActions.start();
+    }
+  }, [isGlobalTimerRunning]);
 
   return (
     <div
@@ -122,7 +141,7 @@ export function IndexSubTaskItem({
                     onClick={() => {
                       if (!timerState.isRunning) {
                         onExecuteSubtask(task.id);
-                        timerActions.start();
+                        startTimerOnlyIfGlobalTimerIsRunning();
                       } else {
                         onStopSubtask?.(task.id);
                         timerActions.stop();
