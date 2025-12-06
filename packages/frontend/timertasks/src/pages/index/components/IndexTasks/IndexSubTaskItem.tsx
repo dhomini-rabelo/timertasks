@@ -6,7 +6,7 @@ import {
   Square,
   Trash2,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask } from "../../hooks/useTasks";
@@ -56,6 +56,7 @@ export function IndexSubTaskItem({
   const [state, setState] = useState<IndexSubTaskItemState>({
     alertMinutes: "5",
   });
+  const isFirstExecution = useRef(true);
 
   function playAlertSound() {
     const alarmAudio = new Audio("/alarm-loop.mp3");
@@ -77,10 +78,12 @@ export function IndexSubTaskItem({
   }
 
   useEffect(() => {
-    if (isActive && task.isRunning) {
+    if (isActive && !isFirstExecution.current) {
       handleToggleSubtaskTimer();
     }
-  }, [isGlobalTimerRunning, task.isRunning]);
+
+    isFirstExecution.current = false;
+  }, [isGlobalTimerRunning, isFirstExecution]);
 
   useEffect(() => {
     const alertTimerInSeconds = Number(state.alertMinutes) * 60;
