@@ -62,10 +62,14 @@ export function IndexPage() {
       return;
     }
 
-    setState((currentState) => ({
-      ...currentState,
-      permissionStatus: Notification.permission,
-    }));
+    if (Notification.permission === "default") {
+      handleRequestPermission();
+    } else {
+      setState((currentState) => ({
+        ...currentState,
+        permissionStatus: Notification.permission,
+      }));
+    }
   }, [setState]);
 
   const shouldBlockContent = state.permissionStatus !== "granted";
