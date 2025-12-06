@@ -75,7 +75,6 @@ export function IndexSubTaskItem({
   }
 
   useEffect(() => {
-    console.log("isGlobalTimerRunning", isGlobalTimerRunning);
     handleToggleSubtaskTimer();
   }, [isGlobalTimerRunning]);
 
