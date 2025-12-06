@@ -32,7 +32,7 @@ export function Select(props: SelectProps) {
     >
       <RadixSelect.Trigger
         className={twMerge(
-          "w-full h-[48px] px-4 py-2 rounded-[12px] border border-Black-600 bg-White text-Black-700 text-[12px] leading-normal outline-none focus:border-Green-400 focus:ring-1 focus:ring-Green-400 transition-all flex items-center justify-between gap-2 data-placeholder:text-Black-400 data-disabled:cursor-not-allowed data-disabled:opacity-50",
+          "w-full h-[48px] px-4 py-2 rounded-[12px] border border-Black-600 bg-White text-Black-700 text-[12px] leading-normal outline-none transition-all flex items-center justify-between gap-2 data-placeholder:text-Black-400 data-disabled:cursor-not-allowed data-disabled:opacity-50",
           props.className
         )}
       >
@@ -69,10 +69,10 @@ function renderOption(option: SelectOption) {
       disabled={option.disabled}
       className="relative flex cursor-pointer select-none items-center gap-2 rounded-[10px] px-3 py-2 text-[12px] leading-normal text-Black-700 outline-none transition-colors data-highlighted:bg-Green-100 data-highlighted:text-Black-900 data-disabled:cursor-not-allowed data-disabled:opacity-50"
     >
-      <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
-      <RadixSelect.ItemIndicator className="absolute right-3">
+      <RadixSelect.ItemIndicator className="">
         <Check className="h-4 w-4 text-Green-400" />
       </RadixSelect.ItemIndicator>
+      <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
     </RadixSelect.Item>
   );
 }
