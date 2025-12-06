@@ -28,7 +28,7 @@ const intervalRef: { current: ReturnType<typeof setInterval> | null } = {
 };
 const endTimeRef: { current: Date | null } = { current: null };
 
-export const useCountdownTimerGlobal = create<CountdownTimerStore>((set, get) => {
+export const useCountdownTimerState = create<CountdownTimerStore>((set, get) => {
   function setState(partial: Partial<CountdownTimerState>) {
     set((store) => ({
       state: {

@@ -1,17 +1,17 @@
 import { RotateCcw } from "lucide-react";
 import Button from "../../../layout/components/atoms/Button";
 import { Timer } from "../../../layout/components/common/Timer";
-import { useCountdownTimerGlobal } from "../states/useCountdownTimer.global";
+import { useCountdownTimerState } from "../states/countdownTimer";
 
 export function IndexTimer() {
-  const start = useCountdownTimerGlobal((store) => store.actions.start);
-  const stop = useCountdownTimerGlobal((store) => store.actions.stop);
-  const reset = useCountdownTimerGlobal((store) => store.actions.reset);
-  const currentTimeInSeconds = useCountdownTimerGlobal(
+  const start = useCountdownTimerState((store) => store.actions.start);
+  const stop = useCountdownTimerState((store) => store.actions.stop);
+  const reset = useCountdownTimerState((store) => store.actions.reset);
+  const currentTimeInSeconds = useCountdownTimerState(
     (store) => store.state.currentTimeInSeconds
   );
-  const isRunning = useCountdownTimerGlobal((store) => store.state.isRunning);
-  const initialMinutes = useCountdownTimerGlobal(
+  const isRunning = useCountdownTimerState((store) => store.state.isRunning);
+  const initialMinutes = useCountdownTimerState(
     (store) => store.state.initialMinutes
   );
 
