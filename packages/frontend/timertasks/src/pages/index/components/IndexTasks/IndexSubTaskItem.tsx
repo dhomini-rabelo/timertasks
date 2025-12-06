@@ -1,4 +1,5 @@
 import {
+  Bell,
   Check,
   GripVertical,
   Pencil,
@@ -6,13 +7,18 @@ import {
   Square,
   Trash2,
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Select } from "../../../../layout/components/atoms/Select";
 import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask } from "../../hooks/useTasks";
 import { useCountdownTimerState } from "../../states/countdownTimer";
 import { calculateTotalTimeInSeconds, shouldAutoStart } from "../../utils";
 import { IndexEditInput } from "./IndexEditInput";
+
+interface IndexSubTaskItemState {
+  alertMinutes: string;
+}
 
 interface IndexSubTaskItemProps {
   task: SubTask;
@@ -49,6 +55,14 @@ export function IndexSubTaskItem({
   const isGlobalTimerRunning = useCountdownTimerState(
     (store) => store.state.isRunning
   );
+  const [state, setState] = useState<IndexSubTaskItemState>({
+    alertMinutes: "5",
+  });
+  const alertOptions = [
+    { label: "5 min", value: "5" },
+    { label: "10 min", value: "10" },
+    { label: "15 min", value: "15" },
+  ];
 
   function startTimerOnlyIfGlobalTimerIsRunning() {
     if (isGlobalTimerRunning) {
@@ -137,6 +151,20 @@ export function IndexSubTaskItem({
 
               {isActive && (
                 <div className="flex items-center">
+                  <div className="mr-2">
+                    <Select
+                      options={alertOptions}
+                      value={state.alertMinutes}
+                      onValueChange={(value) =>
+                        setState((previousState) => ({
+                          ...previousState,
+                          alertMinutes: value,
+                        }))
+                      }
+                      startIcon={<Bell className="h-4 w-4 text-Yellow-400" />}
+                      className="h-10 rounded-full px-3 py-0 bg-Black-50 text-Black-700"
+                    />
+                  </div>
                   <button
                     onClick={() => {
                       if (!timerState.isRunning) {
