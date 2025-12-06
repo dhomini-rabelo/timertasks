@@ -5,6 +5,7 @@ interface CountdownTimerState {
   initialMinutes: number;
   currentTimeInSeconds: number;
   isRunning: boolean;
+  totalCycles: number;
 }
 
 interface CountdownTimerActions {
@@ -20,7 +21,7 @@ interface CountdownTimerStore {
 
 const secondsPerMinute = 60;
 const millisecondsPerSecond = 1000;
-const initialMinutes = 25;
+const initialMinutes = 1;
 
 
 const intervalRef: { current: ReturnType<typeof setInterval> | null } = {
@@ -37,6 +38,7 @@ export const useCountdownTimerState = create<CountdownTimerStore>((set, get) => 
         currentTimeInSeconds:
           partial.currentTimeInSeconds ?? store.state.currentTimeInSeconds,
         isRunning: partial.isRunning ?? store.state.isRunning,
+        totalCycles: partial.totalCycles ?? store.state.totalCycles,
       },
       actions: store.actions,
     }));
@@ -71,9 +73,13 @@ export const useCountdownTimerState = create<CountdownTimerStore>((set, get) => 
       );
 
       if (millisecondsLeft <= 0) {
+        const storeSnapshot = get();
+        const completedCycles = storeSnapshot.state.totalCycles + 1;
+
         stop();
         setState({
           currentTimeInSeconds: 0,
+          totalCycles: completedCycles,
         });
         return;
       }
@@ -125,6 +131,7 @@ export const useCountdownTimerState = create<CountdownTimerStore>((set, get) => 
       initialMinutes,
       currentTimeInSeconds: initialMinutes * secondsPerMinute,
       isRunning: false,
+      totalCycles: 0,
     },
     actions: {
       start,
