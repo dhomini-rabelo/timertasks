@@ -18,6 +18,7 @@ import {
   shouldAutoStart,
 } from "../../utils";
 import { IndexAlertSelect } from "./IndexAlertSelect";
+import { IndexDebugTimer, type IndexDebugTimerHandle } from "./IndexDebugTimer";
 import { IndexEditInput } from "./IndexEditInput";
 import { errorMessageAtom } from "./state";
 
@@ -37,23 +38,6 @@ interface IndexSubTaskItemProps {
   onStopSubtask?: (id: string) => void;
   onToggleSubtask: (id: string) => void;
   dragHandleProps?: Record<string, unknown>;
-}
-
-function playAlertSound(currentTimeInSeconds: number) {
-  const alarmAudio = new Audio("/alarm-loop.mp3");
-  const restartPositionInSeconds = 0;
-  alarmAudio.currentTime = restartPositionInSeconds;
-  alarmAudio
-    .play()
-    .catch(() => {})
-    .then(() => {
-      new Notification("Task Alert", {
-        icon: "/logo.svg",
-        body: `Task time: ${formatTime(currentTimeInSeconds)}`,
-        requireInteraction: false,
-        silent: true,
-      });
-    });
 }
 
 export function IndexSubTaskItem({
@@ -79,8 +63,8 @@ export function IndexSubTaskItem({
   const [state, setState] = useState<IndexSubTaskItemState>({
     alertMinutes: "1",
   });
-  const isFirstExecution = useRef(true);
   const dispatchErrorMessage = useSetAtom(errorMessageAtom);
+  const debuggingTimerRef = useRef<IndexDebugTimerHandle | null>(null);
 
   function handleToggleSubtaskTimer() {
     if (!timerState.isRunning) {
@@ -96,13 +80,35 @@ export function IndexSubTaskItem({
     }
   }
 
+  function playAlertSound(currentTimeInSeconds: number) {
+    const debuggingTimeInSeconds =
+      debuggingTimerRef.current?.getDebuggingTimeInSeconds() ?? 0;
+
+    const alarmAudio = new Audio("/alarm-loop.mp3");
+    const restartPositionInSeconds = 0;
+    alarmAudio.currentTime = restartPositionInSeconds;
+    alarmAudio
+      .play()
+      .catch(() => {})
+      .then(() => {
+        new Notification("Task Alert", {
+          icon: "/logo.svg",
+          body: `Time: ${formatTime(currentTimeInSeconds)}${
+            debuggingTimeInSeconds > 0
+              ? ` | Debug: ${formatTime(debuggingTimeInSeconds)}`
+              : ""
+          }`,
+          requireInteraction: false,
+          silent: true,
+        });
+      });
+  }
+
   useEffect(() => {
-    if (isActive && !isFirstExecution.current) {
+    if (isActive && timerState.currentTimeInSeconds > 0) {
       handleToggleSubtaskTimer();
     }
-
-    isFirstExecution.current = false;
-  }, [isGlobalTimerRunning, isFirstExecution]);
+  }, [isGlobalTimerRunning]);
 
   useEffect(() => {
     const alertTimerInSeconds = Number(state.alertMinutes) * 60;
@@ -231,36 +237,47 @@ export function IndexSubTaskItem({
       </div>
 
       {!isEditing && isActive && (
-        <div className="flex justify-between rounded-[12px] px-3 py-2 transition-all">
-          <div className="flex items-center gap-1 transition-all">
-            {!task.isRunning && (
+        <div className="flex flex-col gap-2 rounded-[12px] px-3 py-2 transition-all">
+          <div className="flex items-center justify-between transition-all">
+            <div className="flex items-center gap-1 transition-all">
+              {!task.isRunning && (
+                <button
+                  onClick={() => onDelete(task.id)}
+                  className="text-Red-400 hover:text-Red-500 transition-all p-2"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              )}
               <button
-                onClick={() => onDelete(task.id)}
-                className="text-Red-400 hover:text-Red-500 transition-all p-2"
+                onClick={() => onEdit(task.id)}
+                className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
               >
-                <Trash2 className="w-5 h-5" />
+                <Pencil className="w-5 h-5" />
               </button>
-            )}
-            <button
-              onClick={() => onEdit(task.id)}
-              className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
-            >
-              <Pencil className="w-5 h-5" />
-            </button>
-          </div>
-          {!task.isRunning && (
-            <div className="w-max-content">
-              <IndexAlertSelect
-                value={state.alertMinutes}
-                onChange={(value) =>
-                  setState((previousState) => ({
-                    ...previousState,
-                    alertMinutes: value,
-                  }))
-                }
-              />
             </div>
-          )}
+            {!task.isRunning && (
+              <div className="w-max-content">
+                <IndexAlertSelect
+                  value={state.alertMinutes}
+                  onChange={(value) =>
+                    setState((previousState) => ({
+                      ...previousState,
+                      alertMinutes: value,
+                    }))
+                  }
+                />
+              </div>
+            )}
+            {task.isRunning && (
+              <div className="w-full pl-2">
+                <IndexDebugTimer
+                  ref={debuggingTimerRef}
+                  isRunning={timerState.isRunning}
+                  targetMinutes={Number(state.alertMinutes)}
+                />
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
