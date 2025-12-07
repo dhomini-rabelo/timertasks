@@ -143,12 +143,12 @@ export function IndexSubTaskItem({
   }, [timerState.currentTimeInSeconds, state.alertMinutes]);
 
   return (
-    <div className="group space-y-0 bg-Black-600/50 border border-Black-300/15 rounded-[12px]">
+    <div className="group space-y-0 bg-Black-100/50 border border-Black-300/15 rounded-[12px]">
       <div
         className={`flex items-center justify-between p-4 rounded-[12px] bg-white border transition-all shadow-sm hover:shadow-md ${
           isActive
             ? "border-Green-400 bg-Green-50/30"
-            : "border-Black-600/30 hover:border-Green-400/50"
+            : "border-Black-100/30 hover:border-Green-400/50"
         }`}
       >
         {isEditing ? (

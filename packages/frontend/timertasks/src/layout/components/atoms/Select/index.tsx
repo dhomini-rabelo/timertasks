@@ -32,7 +32,7 @@ export function Select(props: SelectProps) {
     >
       <RadixSelect.Trigger
         className={twMerge(
-          "w-full h-[48px] px-4 py-2 rounded-[12px] border border-Black-600 bg-White text-Black-700 text-[12px] leading-normal outline-none transition-all flex items-center justify-between gap-2 data-placeholder:text-Black-400 data-disabled:cursor-not-allowed data-disabled:opacity-50",
+          "w-full h-[48px] px-4 py-2 rounded-[12px] border border-Black-100 bg-White text-Black-700 text-[12px] leading-normal outline-none transition-all flex items-center justify-between gap-2 data-placeholder:text-Black-400 data-disabled:cursor-not-allowed data-disabled:opacity-50",
           props.className
         )}
       >
@@ -41,18 +41,18 @@ export function Select(props: SelectProps) {
           <RadixSelect.Value placeholder={props.placeholder} />
         </span>
         <RadixSelect.Icon>
-          <ChevronDown className="h-4 w-4 text-Black-600" />
+          <ChevronDown className="h-4 w-4 text-Black-100" />
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
       <RadixSelect.Portal>
-        <RadixSelect.Content className="z-50 overflow-hidden rounded-[12px] border border-Black-600 bg-White shadow-[0px_12px_40px_rgba(0,0,0,0.25)]">
-          <RadixSelect.ScrollUpButton className="flex items-center justify-center p-2 text-Black-600">
+        <RadixSelect.Content className="z-50 overflow-hidden rounded-[12px] border border-Black-100 bg-White shadow-[0px_12px_40px_rgba(0,0,0,0.25)]">
+          <RadixSelect.ScrollUpButton className="flex items-center justify-center p-2 text-Black-100">
             <ChevronUp className="h-4 w-4" />
           </RadixSelect.ScrollUpButton>
           <RadixSelect.Viewport className="p-2">
             {props.options.map(renderOption)}
           </RadixSelect.Viewport>
-          <RadixSelect.ScrollDownButton className="flex items-center justify-center p-2 text-Black-600">
+          <RadixSelect.ScrollDownButton className="flex items-center justify-center p-2 text-Black-100">
             <ChevronDown className="h-4 w-4" />
           </RadixSelect.ScrollDownButton>
         </RadixSelect.Content>

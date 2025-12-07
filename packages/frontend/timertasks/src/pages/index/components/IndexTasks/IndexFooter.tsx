@@ -19,7 +19,7 @@ export function IndexFooter({
   onFinishTask,
 }: IndexFooterProps) {
   return (
-    <div className="flex items-center justify-between py-2 border-b border-Black-600/20">
+    <div className="flex items-center justify-between py-2 border-b border-Black-100/20">
       <span className="text-sm text-Black-450 font-medium">
         {completedCount} of {totalCount} completed
       </span>

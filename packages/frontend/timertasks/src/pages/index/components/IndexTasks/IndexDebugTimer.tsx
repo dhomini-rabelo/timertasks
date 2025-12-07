@@ -90,7 +90,7 @@ export const IndexDebugTimer = forwardRef<
           <span className="text-xs font-medium">Debug</span>
         </div>
       </button>
-      <div className="h-2 w-full rounded-full bg-Black-600/30 overflow-hidden flex-1">
+      <div className="h-2 w-full rounded-full bg-Black-100/30 overflow-hidden flex-1">
         <div
           className="h-full bg-Blue-400 transition-[width] duration-300 ease-out"
           style={{ width: `${progressPercentage}%` }}

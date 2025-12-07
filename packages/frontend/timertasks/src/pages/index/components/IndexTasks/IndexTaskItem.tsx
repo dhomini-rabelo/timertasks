@@ -55,7 +55,7 @@ export function IndexTaskItem({
         className={`group flex items-center justify-between p-4 rounded-[12px] bg-white border transition-all shadow-sm hover:shadow-md ${
           isActive
             ? "border-Green-400 bg-Green-50/30"
-            : "border-Black-600/30 hover:border-Green-400/50"
+            : "border-Black-100/30 hover:border-Green-400/50"
         }`}
       >
         {isEditing ? (
@@ -118,7 +118,7 @@ export function IndexTaskItem({
       </div>
       {activeSubtask && activeSubtask.isRunning && (
         <div className="flex items-center justify-end">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-Black-600/20 rounded-lg shadow-sm text-sm font-medium text-Black-700 transition-all hover:border-Green-400 hover:text-Green-500">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-Black-100/20 rounded-lg shadow-sm text-sm font-medium text-Black-700 transition-all hover:border-Green-400 hover:text-Green-500">
             {shouldAutoStartState ? (
               <div className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-Green-400 opacity-75"></span>

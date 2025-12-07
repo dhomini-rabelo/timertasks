@@ -112,7 +112,7 @@ export function IndexTasks() {
           {listingMode === "subtasks" && activeTask ? (
             <>
               <span
-                className="text-Black-400 cursor-pointer hover:text-Black-600 transition-colors"
+                className="text-Black-400 cursor-pointer hover:text-Black-100 transition-colors"
                 onClick={handleExitSubtasks}
               >
                 Tasks
