@@ -1,13 +1,6 @@
 import { ChevronRight, GripVertical, Pencil, Trash2 } from "lucide-react";
-import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask, Task } from "../../hooks/useTasks";
-import { useCountdownTimerState } from "../../states/countdownTimer";
-import {
-  calculateTotalTimeInSeconds,
-  formatTime,
-  getActiveTask,
-  shouldAutoStart,
-} from "../../utils";
+import { getActiveTask } from "../../utils";
 import { IndexEditInput } from "./IndexEditInput";
 
 interface IndexTaskItemProps {
@@ -34,20 +27,11 @@ export function IndexTaskItem({
   dragHandleProps,
 }: IndexTaskItemProps) {
   const activeSubtask = getActiveTask(task.subtasks) as SubTask | undefined;
-  const totalSeconds = activeSubtask
-    ? calculateTotalTimeInSeconds(activeSubtask.timeEvents)
-    : 0;
-  const isGlobalTimerRunning = useCountdownTimerState(
-    (store) => store.state.isRunning
+  const hasSubtaskBeenStarted = activeSubtask?.timeEvents.some(
+    (event) => event.type === "start"
   );
-  const shouldAutoStartState =
-    isGlobalTimerRunning &&
-    activeSubtask?.isRunning &&
-    shouldAutoStart(activeSubtask.timeEvents);
-  const { state: timerState } = useCountUpTimer({
-    initialSeconds: totalSeconds,
-    autoStart: activeSubtask ? shouldAutoStartState : false,
-  });
+  const isSubtaskTimerActive =
+    activeSubtask?.timeEvents.at(-1)?.type === "start";
 
   return (
     <>
@@ -116,10 +100,10 @@ export function IndexTaskItem({
           </>
         )}
       </div>
-      {activeSubtask && activeSubtask.isRunning && (
+      {activeSubtask && hasSubtaskBeenStarted && (
         <div className="flex items-center justify-end">
           <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-Black-100/20 rounded-lg shadow-sm text-sm font-medium text-Black-700 transition-all hover:border-Green-400 hover:text-Green-500">
-            {shouldAutoStartState ? (
+            {isSubtaskTimerActive ? (
               <div className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-Green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-Green-500"></span>
@@ -128,7 +112,7 @@ export function IndexTaskItem({
               <div className="h-2 w-2 rounded-full bg-Red-400"></div>
             )}
             <span className="tabular-nums tracking-wider font-mono">
-              {formatTime(timerState.currentTimeInSeconds)}
+              {isSubtaskTimerActive ? "Running" : "Paused"}
             </span>
           </div>
         </div>
