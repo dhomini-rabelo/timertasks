@@ -86,7 +86,7 @@ export function IndexPage() {
               />
             </div>
           ) : (
-            <div className="flex flex-col md:flex-row items-start justify-center gap-16 w-full">
+            <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-16 w-full">
               <div className="shrink-0 md:self-start pt-4 flex flex-col gap-8">
                 <IndexTimer />
                 <IndexScore />

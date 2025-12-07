@@ -7,7 +7,6 @@ interface IndexAlertSelectProps {
 }
 
 const alertOptions = [
-  { label: "1 min", value: "1" },
   { label: "5 min", value: "5" },
   { label: "10 min", value: "10" },
   { label: "15 min", value: "15" },

@@ -64,7 +64,7 @@ export function IndexSubTaskItem({
       shouldAutoStart(task.timeEvents),
   });
   const [state, setState] = useState<IndexSubTaskItemState>({
-    alertMinutes: "1",
+    alertMinutes: "5",
   });
   const dispatchErrorMessage = useSetAtom(errorMessageAtom);
   const debuggingTimerRef = useRef<IndexDebugTimerHandle | null>(null);
