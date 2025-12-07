@@ -53,13 +53,16 @@ export function IndexSubTaskItem({
   onToggleSubtask,
   dragHandleProps,
 }: IndexSubTaskItemProps) {
-  const { actions: timerActions, state: timerState } = useCountUpTimer({
-    initialSeconds: calculateTotalTimeInSeconds(task.timeEvents),
-    autoStart: shouldAutoStart(task.timeEvents),
-  });
   const isGlobalTimerRunning = useCountdownTimerState(
     (store) => store.state.isRunning
   );
+  const { actions: timerActions, state: timerState } = useCountUpTimer({
+    initialSeconds: calculateTotalTimeInSeconds(task.timeEvents),
+    autoStart:
+      isGlobalTimerRunning &&
+      task.isRunning &&
+      shouldAutoStart(task.timeEvents),
+  });
   const [state, setState] = useState<IndexSubTaskItemState>({
     alertMinutes: "1",
   });

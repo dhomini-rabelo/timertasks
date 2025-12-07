@@ -1,6 +1,7 @@
 import { ChevronRight, GripVertical, Pencil, Trash2 } from "lucide-react";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask, Task } from "../../hooks/useTasks";
+import { useCountdownTimerState } from "../../states/countdownTimer";
 import {
   calculateTotalTimeInSeconds,
   formatTime,
@@ -36,9 +37,13 @@ export function IndexTaskItem({
   const totalSeconds = activeSubtask
     ? calculateTotalTimeInSeconds(activeSubtask.timeEvents)
     : 0;
-  const shouldAutoStartState = activeSubtask
-    ? shouldAutoStart(activeSubtask.timeEvents)
-    : false;
+  const isGlobalTimerRunning = useCountdownTimerState(
+    (store) => store.state.isRunning
+  );
+  const shouldAutoStartState =
+    isGlobalTimerRunning &&
+    activeSubtask?.isRunning &&
+    shouldAutoStart(activeSubtask.timeEvents);
   const { state: timerState } = useCountUpTimer({
     initialSeconds: totalSeconds,
     autoStart: activeSubtask ? shouldAutoStartState : false,

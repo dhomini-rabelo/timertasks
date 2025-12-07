@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getActiveTask } from "../utils";
 
+const localStorageKey = "timertasks:tasks";
 
 export type SubTaskTimeEvent = {
   type: 'start' | 'stop' | 'complete';
@@ -26,13 +27,112 @@ export interface Task {
 
 interface UseTasksState {
   tasks: Task[];
+  hasHydrated: boolean;
 }
 
 export function useTasks() {
   const [state, setState] = useState<UseTasksState>({
     tasks: [],
+    hasHydrated: false,
+  });
+  const stateRef = useRef<UseTasksState>({
+    tasks: [],
+    hasHydrated: false,
   });
   const activeTask = getActiveTask(state.tasks);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedTasks = localStorage.getItem(localStorageKey);
+    if (!storedTasks) {
+      setState((prev) => ({
+        ...prev,
+        hasHydrated: true,
+      }));
+      return;
+    }
+
+    try {
+      const parsedTasks = JSON.parse(storedTasks) as Task[];
+      const normalizedTasks = parsedTasks.map((task) => ({
+        ...task,
+        subtasks: task.subtasks?.map((subtask) => ({
+          ...subtask,
+          timeEvents: subtask.timeEvents?.map((event) => ({
+            ...event,
+            createdAt: new Date(event.createdAt),
+          })) ?? [],
+        })) ?? [],
+      }));
+      setState({
+        tasks: normalizedTasks,
+        hasHydrated: true,
+      });
+    } catch {
+      setState({
+        tasks: [],
+        hasHydrated: true,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    function handleBeforeUnload() {
+      if (typeof window === "undefined") return;
+      if (!stateRef.current.hasHydrated) return;
+
+      const stopDate = new Date();
+      const tasksWithStoppedSubtasks = stateRef.current.tasks.map((task) => {
+        if (!task.subtasks.some((subtask) => subtask.isRunning)) {
+          return task;
+        }
+
+        const updatedSubtasks = task.subtasks.map((subtask) => {
+          const lastEventWasStart = subtask.timeEvents[subtask.timeEvents.length - 1]?.type === "start";
+          
+          if (!subtask.isRunning || !lastEventWasStart) {
+            return subtask;
+          }
+
+          return {
+            ...subtask,
+            isRunning: true,
+            timeEvents: [
+              ...subtask.timeEvents,
+              {
+                type: "stop",
+                createdAt: stopDate,
+              },
+            ],
+          };
+        });
+
+        return {
+          ...task,
+          isRunning: true,
+          subtasks: updatedSubtasks,
+        };
+      });
+
+      localStorage.setItem(localStorageKey, JSON.stringify(tasksWithStoppedSubtasks));
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!state.hasHydrated) return;
+    if (typeof window === "undefined") return;
+    localStorage.setItem(localStorageKey, JSON.stringify(state.tasks));
+  }, [state.hasHydrated, state.tasks]);
 
   function addTask(title: string) {
     if (!title.trim()) return;
