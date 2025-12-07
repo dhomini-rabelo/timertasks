@@ -52,7 +52,13 @@ export const IndexDebugTimer = forwardRef<
   }
 
   useEffect(() => {
-    if (timerState.currentTimeInSeconds > 0) {
+    const areTheTimersAlreadyInTheSameState =
+      timerState.isRunning === isRunning;
+
+    if (
+      timerState.currentTimeInSeconds > 0 &&
+      !areTheTimersAlreadyInTheSameState
+    ) {
       handleToggleDebugging();
     }
   }, [isRunning]);

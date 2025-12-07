@@ -66,7 +66,7 @@ export function IndexSubTaskItem({
   const dispatchErrorMessage = useSetAtom(errorMessageAtom);
   const debuggingTimerRef = useRef<IndexDebugTimerHandle | null>(null);
 
-  function handleToggleSubtaskTimer() {
+  function handleToggleSubtaskTimer(isGlobalTimerRunning: boolean) {
     if (!timerState.isRunning) {
       if (isGlobalTimerRunning) {
         onExecuteSubtask(task.id);
@@ -105,8 +105,15 @@ export function IndexSubTaskItem({
   }
 
   useEffect(() => {
-    if (isActive && timerState.currentTimeInSeconds > 0) {
-      handleToggleSubtaskTimer();
+    const areTheTimersAlreadyInTheSameState =
+      timerState.isRunning === isGlobalTimerRunning;
+
+    if (
+      isActive &&
+      timerState.currentTimeInSeconds > 0 &&
+      !areTheTimersAlreadyInTheSameState
+    ) {
+      handleToggleSubtaskTimer(isGlobalTimerRunning);
     }
   }, [isGlobalTimerRunning]);
 
@@ -210,7 +217,9 @@ export function IndexSubTaskItem({
               {isActive && (
                 <div className="flex items-center">
                   <button
-                    onClick={handleToggleSubtaskTimer}
+                    onClick={() =>
+                      handleToggleSubtaskTimer(isGlobalTimerRunning)
+                    }
                     className="text-Green-400 hover:text-Green-500 transition-all p-2"
                   >
                     {timerState.isRunning ? (
