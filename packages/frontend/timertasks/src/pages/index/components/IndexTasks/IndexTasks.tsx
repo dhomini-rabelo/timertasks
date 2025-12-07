@@ -142,16 +142,18 @@ export function IndexTasks() {
 
         <IndexErrorMessage />
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 max-h-[calc(100vh-400px)] min-h-[250px] overflow-y-auto">
           {activeTasks.length === 0 ? (
-            <div className="text-center py-8 text-Black-400">
-              {listingMode === "tasks-group"
-                ? listingTasks.length > 0
+            <div className="grow flex items-center justify-center">
+              <span className="text-base text-Black-400">
+                {listingMode === "tasks-group"
+                  ? listingTasks.length > 0
+                    ? "All tasks completed!"
+                    : "No task group registered"
+                  : listingTasks.length > 0
                   ? "All tasks completed!"
-                  : "No task group registered"
-                : listingTasks.length > 0
-                ? "All tasks completed!"
-                : "No tasks yet. Add one above!"}
+                  : "No tasks yet. Add one above!"}
+              </span>
             </div>
           ) : (
             <IndexActiveTasksList
