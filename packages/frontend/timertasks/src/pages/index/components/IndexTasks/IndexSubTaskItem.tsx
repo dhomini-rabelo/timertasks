@@ -127,91 +127,82 @@ export function IndexSubTaskItem({
   }, [timerState.currentTimeInSeconds, state.alertMinutes]);
 
   return (
-    <div
-      className={`group flex items-center justify-between p-4 rounded-[12px] bg-white border transition-all shadow-sm hover:shadow-md ${
-        isActive
-          ? "border-Green-400 bg-Green-50/30"
-          : "border-Black-600/30 hover:border-Green-400/50"
-      }`}
-    >
-      {isEditing ? (
-        <IndexEditInput
-          initialValue={task.title}
-          onSave={onSaveEditing}
-          onCancel={onCancelEditing}
-        />
-      ) : (
-        <>
-          <div className="flex items-center gap-4 flex-1">
-            <div className="flex items-center gap-2">
-              {!task.isRunning && (
-                <div
-                  {...dragHandleProps}
-                  className="cursor-grab active:cursor-grabbing text-Black-400 hover:text-Black-700 transition-colors"
-                >
-                  <GripVertical className="w-5 h-5" />
-                </div>
-              )}
+    <div className="group space-y-0 bg-Black-600/50 border border-Black-300/15 rounded-[12px]">
+      <div
+        className={`flex items-center justify-between p-4 rounded-[12px] bg-white border transition-all shadow-sm hover:shadow-md ${
+          isActive
+            ? "border-Green-400 bg-Green-50/30"
+            : "border-Black-600/30 hover:border-Green-400/50"
+        }`}
+      >
+        {isEditing ? (
+          <IndexEditInput
+            initialValue={task.title}
+            onSave={onSaveEditing}
+            onCancel={onCancelEditing}
+          />
+        ) : (
+          <>
+            <div className="flex items-center gap-4 flex-1">
+              <div className="flex items-center gap-2">
+                {!task.isRunning && (
+                  <div
+                    {...dragHandleProps}
+                    className="cursor-grab active:cursor-grabbing text-Black-400 hover:text-Black-700 transition-colors"
+                  >
+                    <GripVertical className="w-5 h-5" />
+                  </div>
+                )}
 
-              {isActive && (
-                <div className="flex items-center gap-3">
-                  <div className="relative w-16 h-16">
-                    <Timer
-                      className="w-full h-full text-xs"
-                      timerDisplayInSeconds={timerState.currentTimeInSeconds.toString()}
-                      initialTimeInMinutes={Number(state.alertMinutes)}
-                    />
+                {isActive && (
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-16 h-16">
+                      <Timer
+                        className="w-full h-full text-xs"
+                        timerDisplayInSeconds={timerState.currentTimeInSeconds.toString()}
+                        initialTimeInMinutes={Number(state.alertMinutes)}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <span
+                className={`text-sm font-medium transition-colors break-all ${
+                  task.completed
+                    ? "text-Black-400 line-through"
+                    : isActive
+                    ? "text-Black-700 font-semibold"
+                    : "text-Black-500"
+                }`}
+              >
+                {task.title}
+              </span>
+            </div>
+            <div className="flex items-center">
+              {!isActive && (
+                <div className="flex items-center mr-2">
+                  <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all">
+                    {!task.isRunning && (
+                      <button
+                        onClick={() => onDelete(task.id)}
+                        className="text-Red-400 hover:text-Red-500 transition-all p-2"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => onEdit(task.id)}
+                      className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
               )}
-            </div>
-
-            <span
-              className={`text-sm font-medium transition-colors break-all ${
-                task.completed
-                  ? "text-Black-400 line-through"
-                  : isActive
-                  ? "text-Black-700 font-semibold"
-                  : "text-Black-500"
-              }`}
-            >
-              {task.title}
-            </span>
-          </div>
-          <div className="flex items-center">
-            <div className="flex items-center mr-2">
-              <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all">
-                {!task.isRunning && (
-                  <button
-                    onClick={() => onDelete(task.id)}
-                    className="text-Red-400 hover:text-Red-500 transition-all p-2"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                )}
-                <button
-                  onClick={() => onEdit(task.id)}
-                  className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
-                >
-                  <Pencil className="w-5 h-5" />
-                </button>
-              </div>
 
               {isActive && (
                 <div className="flex items-center">
-                  {!task.isRunning && (
-                    <div className="mr-2">
-                      <IndexAlertSelect
-                        value={state.alertMinutes}
-                        onChange={(value) =>
-                          setState((previousState) => ({
-                            ...previousState,
-                            alertMinutes: value,
-                          }))
-                        }
-                      />
-                    </div>
-                  )}
                   <button
                     onClick={handleToggleSubtaskTimer}
                     className="text-Green-400 hover:text-Green-500 transition-all p-2"
@@ -235,8 +226,42 @@ export function IndexSubTaskItem({
                 </div>
               )}
             </div>
+          </>
+        )}
+      </div>
+
+      {!isEditing && isActive && (
+        <div className="flex justify-between rounded-[12px] px-3 py-2 transition-all">
+          <div className="flex items-center gap-1 transition-all">
+            {!task.isRunning && (
+              <button
+                onClick={() => onDelete(task.id)}
+                className="text-Red-400 hover:text-Red-500 transition-all p-2"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+            <button
+              onClick={() => onEdit(task.id)}
+              className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
+            >
+              <Pencil className="w-5 h-5" />
+            </button>
           </div>
-        </>
+          {!task.isRunning && (
+            <div className="w-max-content">
+              <IndexAlertSelect
+                value={state.alertMinutes}
+                onChange={(value) =>
+                  setState((previousState) => ({
+                    ...previousState,
+                    alertMinutes: value,
+                  }))
+                }
+              />
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

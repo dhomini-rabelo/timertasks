@@ -20,7 +20,7 @@ export function IndexAlertSelect(props: IndexAlertSelectProps) {
       value={props.value}
       onValueChange={props.onChange}
       startIcon={<Bell className="h-4 w-4 text-Yellow-400" />}
-      className="h-8 rounded-full px-2.5 py-0 bg-Black-50 text-Black-700 text-xs"
+      className="h-8 rounded-full px-2.5 py-0 text-Black-700 text-xs"
     />
   );
 }
