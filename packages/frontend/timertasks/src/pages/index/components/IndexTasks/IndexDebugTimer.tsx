@@ -1,8 +1,8 @@
 import { useSetAtom } from "jotai";
 import { Check, Play, Square } from "lucide-react";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { formatTime } from "../../../../code/utils/date";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
-import { formatTime } from "../../utils";
 import { errorMessageAtom } from "./state";
 
 export interface IndexDebugTimerHandle {
