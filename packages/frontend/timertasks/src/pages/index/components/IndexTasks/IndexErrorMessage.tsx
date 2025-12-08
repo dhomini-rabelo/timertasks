@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { TriangleAlert } from "lucide-react";
 import { useEffect } from "react";
-import { errorMessageAtom } from "./state";
+import { errorMessageAtom } from "./shared-state";
 
 export function IndexErrorMessage() {
   const [errorMessage, setErrorMessage] = useAtom(errorMessageAtom);

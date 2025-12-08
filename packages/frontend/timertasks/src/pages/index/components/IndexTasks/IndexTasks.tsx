@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box } from "../../../../layout/components/atoms/Box";
 import { useTasks } from "../../hooks/useTasks";
-import { IndexActiveTasksList } from "./IndexActiveTasksList";
+import { IndexActiveTasksList } from "./IndexActiveTasksList/IndexActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
 import { IndexErrorMessage } from "./IndexErrorMessage";

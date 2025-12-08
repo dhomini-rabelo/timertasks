@@ -16,7 +16,7 @@ export function IndexCompletedTaskItem({
     "subtasks" in task && (task.subtasks as SubTask[]).length > 0;
 
   return (
-    <div className="group flex flex-col p-4 rounded-[12px] bg-white border border-Black-100/30 opacity-95">
+    <div className="group flex flex-col p-4 rounded-xl bg-white border border-Black-100/30 opacity-95">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 flex-1">
           <div className="w-5 h-5" />{" "}

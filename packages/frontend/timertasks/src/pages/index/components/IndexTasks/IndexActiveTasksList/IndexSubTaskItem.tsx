@@ -8,19 +8,19 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { formatTime } from "../../../../code/utils/date";
-import { Timer } from "../../../../layout/components/common/Timer";
-import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
-import type { SubTask } from "../../hooks/useTasks";
+import { formatTime } from "../../../../../code/utils/date";
+import { Timer } from "../../../../../layout/components/common/Timer";
+import { useCountUpTimer } from "../../../../../layout/components/common/Timer/hooks/useCountUpTimer";
+import type { SubTask } from "../../../hooks/useTasks";
 import {
   calculateTotalTimeInSeconds,
   shouldAutoStart,
-} from "../../hooks/useTasks/utils";
-import { useCountdownTimerState } from "../../states/countdownTimer";
+} from "../../../hooks/useTasks/utils";
+import { useCountdownTimerState } from "../../../states/countdownTimer";
+import { errorMessageAtom } from "../shared-state";
 import { IndexAlertSelect } from "./IndexAlertSelect";
 import { IndexDebugTimer, type IndexDebugTimerHandle } from "./IndexDebugTimer";
 import { IndexEditInput } from "./IndexEditInput";
-import { errorMessageAtom } from "./state";
 
 interface IndexSubTaskItemState {
   alertMinutes: string;
@@ -143,9 +143,9 @@ export function IndexSubTaskItem({
   }, [timerState.currentTimeInSeconds, state.alertMinutes]);
 
   return (
-    <div className="group space-y-0 bg-Black-100/50 border border-Black-300/15 rounded-[12px]">
+    <div className="group space-y-0 bg-Black-100/50 border border-Black-300/15 rounded-xl">
       <div
-        className={`flex items-center justify-between p-4 rounded-[12px] bg-white border transition-all shadow-sm hover:shadow-md ${
+        className={`flex items-center justify-between p-4 rounded-xl bg-white border transition-all shadow-sm hover:shadow-md ${
           isActive
             ? "border-Green-400 bg-Green-50/30"
             : "border-Black-100/30 hover:border-Green-400/50"
@@ -249,7 +249,7 @@ export function IndexSubTaskItem({
       </div>
 
       {!isEditing && isActive && (
-        <div className="flex flex-col gap-2 rounded-[12px] px-3 py-2 transition-all">
+        <div className="flex flex-col gap-2 rounded-xl px-3 py-2 transition-all">
           <div className="flex items-center justify-between transition-all">
             <div className="flex items-center gap-1 transition-all">
               {!task.isRunning && (

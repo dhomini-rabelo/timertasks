@@ -1,9 +1,9 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { SubTask, Task } from "../../hooks/useTasks";
+import type { SubTask, Task } from "../../../hooks/useTasks";
+import type { ListingTask } from "../utils";
 import { IndexSubTaskItem } from "./IndexSubTaskItem";
 import { IndexTaskItem } from "./IndexTaskItem";
-import type { ListingTask } from "./utils";
 
 interface IndexSortableTaskItemProps {
   task: ListingTask;
