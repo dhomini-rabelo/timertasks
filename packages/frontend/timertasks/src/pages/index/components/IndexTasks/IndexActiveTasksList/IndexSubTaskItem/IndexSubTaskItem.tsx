@@ -11,11 +11,11 @@ import { useEffect, useRef, useState } from "react";
 import { formatTime } from "../../../../../../code/utils/date";
 import { Timer } from "../../../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../../../layout/components/common/Timer/hooks/useCountUpTimer";
-import type { SubTask } from "../../../../hooks/useTasks";
+import type { SubTask } from "../../../../hooks/useStoredTasks";
 import {
   calculateTotalTimeInSeconds,
   shouldAutoStart,
-} from "../../../../hooks/useTasks/utils";
+} from "../../../../hooks/useStoredTasks/utils";
 import { useCountdownTimerState } from "../../../../states/countdownTimer";
 import { errorMessageAtom } from "../../shared-state";
 import { IndexEditInput } from "../shared-components/IndexEditInput";

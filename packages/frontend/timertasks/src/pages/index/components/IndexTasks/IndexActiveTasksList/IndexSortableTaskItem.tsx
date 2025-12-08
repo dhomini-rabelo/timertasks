@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { SubTask, Task } from "../../../hooks/useTasks";
+import type { SubTask, Task } from "../../../hooks/useStoredTasks";
 import type { ListingTask } from "../utils";
 import { IndexSubTaskItem } from "./IndexSubTaskItem/IndexSubTaskItem";
 import { IndexTaskItem } from "./IndexTaskItem";
