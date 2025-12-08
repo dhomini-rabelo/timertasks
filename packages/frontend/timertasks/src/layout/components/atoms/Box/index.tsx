@@ -19,5 +19,3 @@ export function Box({ children, className, ...props }: BoxProps) {
     </div>
   );
 }
-
-export default Box;

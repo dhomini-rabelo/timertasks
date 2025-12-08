@@ -16,5 +16,3 @@ export function Input({ className, ...props }: InputProps) {
     />
   );
 }
-
-export default Input;

@@ -23,6 +23,7 @@ We have a minimalist Vite TS application that has a timer, todo list, tasks and 
 - The colors that do not exist in global.css should be added
 - Get icons from lucide-react
 - When working with many components, allocate the responsibilities properly.
+- Do not use export default
 
 # Use the patterns below
 
@@ -58,15 +59,6 @@ export function MyComponent({ name }: MyComponentProps) {
   const isFirstRender = useRef(true);
   const doesProperty1HaveTheInitialValue = state.property1 === 'Initial Value';
 
-  // Effects
-  useEffect(() => {
-    console.log('Component mounted or state changed');
-
-    return () => {
-      console.log('Component unmounted or before state changes');
-    };
-  }, []);
-
   // Useful functions
   function otherHelperFunction() {
     console.log('This is another helper function');
@@ -80,6 +72,15 @@ export function MyComponent({ name }: MyComponentProps) {
     }));
     otherHelperFunction();
   }
+
+  // Effects
+  useEffect(() => {
+    console.log('Component mounted or state changed');
+
+    return () => {
+      console.log('Component unmounted or before state changes');
+    };
+  }, []);
 
   return (
     <div>
