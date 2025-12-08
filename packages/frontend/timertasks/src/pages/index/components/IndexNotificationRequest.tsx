@@ -8,6 +8,8 @@ interface IndexNotificationRequestProps {
 }
 
 export function IndexNotificationRequest(props: IndexNotificationRequestProps) {
+  const isPermissionDenied = props.permissionStatus === "denied";
+
   return (
     <Box className="w-full max-w-xl p-8 flex flex-col items-center gap-5 text-center">
       <div className="h-14 w-14 rounded-full bg-Blue-500/10 text-Blue-500 flex items-center justify-center">
@@ -31,7 +33,7 @@ export function IndexNotificationRequest(props: IndexNotificationRequestProps) {
           ? "Requesting permission..."
           : "Allow notifications"}
       </button>
-      {props.permissionStatus === "denied" ? (
+      {isPermissionDenied ? (
         <p className="text-xs text-Red-500">
           Permission denied in the browser. Enable notifications in your
           settings to continue.

@@ -1,5 +1,6 @@
 import { RotateCcw } from "lucide-react";
 import { useEffect } from "react";
+import { SECONDS_PER_MINUTE } from "../../../code/utils/date";
 import { Button } from "../../../layout/components/atoms/Button";
 import { Timer } from "../../../layout/components/common/Timer";
 import { useCountdownTimerState } from "../states/countdownTimer";
@@ -32,10 +33,8 @@ export function IndexTimer() {
   const initialMinutes = useCountdownTimerState(
     (store) => store.state.initialMinutes
   );
-
-  const secondsPerMinute = 60;
   const hasTimerStarted =
-    currentTimeInSeconds !== initialMinutes * secondsPerMinute;
+    currentTimeInSeconds !== initialMinutes * SECONDS_PER_MINUTE;
 
   useEffect(() => {
     if (currentTimeInSeconds === 0) {
