@@ -14,12 +14,16 @@ const alertOptions = [
 
 export function IndexAlertSelect(props: IndexAlertSelectProps) {
   return (
-    <Select
+    <Select.Root
       options={alertOptions}
       value={props.value}
       onValueChange={props.onChange}
-      startIcon={<Bell className="h-4 w-4 text-Yellow-400" />}
-      className="h-8 rounded-full px-2.5 py-0 text-Black-700 text-xs"
-    />
+    >
+      <Select.Trigger className="h-8 rounded-full px-2.5 py-0 text-Black-700 text-xs">
+        <Select.DisplayValue
+          startIcon={<Bell className="h-4 w-4 text-Yellow-400" />}
+        />
+      </Select.Trigger>
+    </Select.Root>
   );
 }
