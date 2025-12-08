@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Box } from "../../../../layout/components/atoms/Box";
 import { useTasks } from "../../hooks/useTasks";
-import { getActiveTask, type ListingTask } from "../../utils";
 import { IndexActiveTasksList } from "./IndexActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
 import { IndexErrorMessage } from "./IndexErrorMessage";
 import { IndexFooter } from "./IndexFooter";
+import { getActiveTask, type ListingTask } from "./utils";
 
 interface IndexTasksState {
   showCompleted: boolean;

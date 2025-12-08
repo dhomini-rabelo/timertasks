@@ -1,7 +1,7 @@
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import type { SubTask, Task } from "../../hooks/useTasks";
-import type { ListingTask } from "../../utils";
+import type { ListingTask } from "./utils";
 
 interface IndexCompletedTaskItemProps {
   task: ListingTask;

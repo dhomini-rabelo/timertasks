@@ -12,9 +12,9 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { ListingTask } from "../../utils";
-import { getActiveTask } from "../../utils";
 import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
+import type { ListingTask } from "./utils";
+import { getActiveTask } from "./utils";
 
 interface IndexActiveTasksListProps {
   activeTasks: ListingTask[];
