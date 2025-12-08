@@ -15,6 +15,7 @@ export function IndexPage() {
     permissionStatus: null,
     isRequestingPermission: false,
   });
+  const shouldBlockContent = state.permissionStatus !== "granted";
 
   function handleRequestPermission() {
     const isNotificationSupported =
@@ -67,8 +68,6 @@ export function IndexPage() {
       permissionStatus: Notification.permission,
     }));
   }, [setState]);
-
-  const shouldBlockContent = state.permissionStatus !== "granted";
 
   return (
     <div className="body-df min-h-screen max-h-screen flex flex-col items-center justify-center p-4">
