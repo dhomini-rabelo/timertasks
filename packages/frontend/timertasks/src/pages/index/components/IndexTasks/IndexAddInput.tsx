@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Button } from "../../../../layout/components/atoms/Button";
 import { Input } from "../../../../layout/components/atoms/Input";
+import type { TaskListingMode } from "./utils";
 
 interface IndexAddInputProps {
   onAdd: (title: string) => void;
-  listingMode: "tasks-group" | "subtasks";
+  listingMode: TaskListingMode;
 }
 
 export function IndexAddInput({ onAdd, listingMode }: IndexAddInputProps) {

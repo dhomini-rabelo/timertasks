@@ -5,6 +5,8 @@ export interface ListingTask {
   isRunning: boolean;
 }
 
+export type TaskListingMode = "tasks-group" | "subtasks";
+
 export function getActiveTask(tasks: ListingTask[]) {
   const firstActiveTaskInTheList = tasks.find((task) => !task.completed);
   return firstActiveTaskInTheList;

@@ -3,13 +3,11 @@ import { Box } from "../../../../layout/components/atoms/Box";
 import { useTasks } from "../../hooks/useStoredTasks";
 import { IndexActiveTasksList } from "./IndexActiveTasksList/IndexActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
-import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
 import { IndexErrorMessage } from "./IndexErrorMessage";
-import { IndexFooter } from "./IndexFooter";
+import { IndexFooter } from "./IndexFooter/IndexFooter";
 import { getActiveTask, type ListingTask } from "./utils";
 
 interface IndexTasksState {
-  showCompleted: boolean;
   editingTaskId: string | null;
   inExecutionTaskId: string | null;
 }
@@ -17,7 +15,6 @@ interface IndexTasksState {
 export function IndexTasks() {
   const { state: taskState, actions: fullTaskActions } = useTasks();
   const [state, setState] = useState<IndexTasksState>({
-    showCompleted: false,
     editingTaskId: null,
     inExecutionTaskId: null,
   });
@@ -45,23 +42,8 @@ export function IndexTasks() {
         ?.subtasks || []
     : taskState.tasks;
   const activeTasks = listingTasks.filter((task) => !task.completed);
-  const completedTasks = listingTasks.filter((task) => task.completed);
-  const completedCount = completedTasks.length;
-  const totalCount = listingTasks.length;
   const listingMode = state.inExecutionTaskId ? "subtasks" : "tasks-group";
   const activeTask = getActiveTask(taskState.tasks);
-
-  const canFinishTask =
-    state.inExecutionTaskId &&
-    listingTasks.length > 0 &&
-    listingTasks.every((subtask) => subtask.completed);
-
-  function handleToggleShowCompleted() {
-    setState((prev) => ({
-      ...prev,
-      showCompleted: !prev.showCompleted,
-    }));
-  }
 
   function handleStartEditingTask(id: string) {
     setState((prev) => ({
@@ -96,13 +78,6 @@ export function IndexTasks() {
       ...prev,
       inExecutionTaskId: null,
     }));
-  }
-
-  function handleFinishTask() {
-    if (state.inExecutionTaskId) {
-      fullTaskActions.toggleTask(state.inExecutionTaskId);
-      handleExitSubtasks();
-    }
   }
 
   return (
@@ -174,21 +149,9 @@ export function IndexTasks() {
         </div>
 
         <IndexFooter
-          completedCount={completedCount}
-          totalCount={totalCount}
-          showCompleted={state.showCompleted}
-          canFinishTask={!!canFinishTask}
-          onToggleShowCompleted={handleToggleShowCompleted}
-          onFinishTask={handleFinishTask}
+          inExecutionTaskId={state.inExecutionTaskId}
+          onFinishTask={handleExitSubtasks}
         />
-
-        {state.showCompleted && completedTasks.length > 0 && (
-          <div className="flex flex-col gap-3">
-            {completedTasks.map((task) => (
-              <IndexCompletedTaskItem key={task.id} task={task} />
-            ))}
-          </div>
-        )}
       </div>
     </Box>
   );
