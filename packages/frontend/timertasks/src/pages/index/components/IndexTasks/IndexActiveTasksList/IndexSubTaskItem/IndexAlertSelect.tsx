@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import { Select } from "../../../../../layout/components/atoms/Select";
+import { Select } from "../../../../../../layout/components/atoms/Select";
 
 interface IndexAlertSelectProps {
   value: string;

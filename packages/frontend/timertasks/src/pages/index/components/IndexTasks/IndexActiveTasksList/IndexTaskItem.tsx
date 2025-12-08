@@ -1,7 +1,7 @@
 import { ChevronRight, GripVertical, Pencil, Trash2 } from "lucide-react";
 import type { SubTask, Task } from "../../../hooks/useTasks";
 import { getActiveTask } from "../utils";
-import { IndexEditInput } from "./IndexEditInput";
+import { IndexEditInput } from "./shared-components/IndexEditInput";
 
 interface IndexTaskItemProps {
   task: Task;
