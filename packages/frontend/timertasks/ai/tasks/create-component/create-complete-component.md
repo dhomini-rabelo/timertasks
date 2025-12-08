@@ -1,4 +1,4 @@
-# General instructions to create a complete React component
+# Instructions to create a complete React component
 
 ## Task
 
@@ -61,7 +61,6 @@ import React from 'react';
 7. Use a state interface and a single state object when multiple properties are needed.
 8. Use function declarations for components and event handlers;
 9. Event handlers are prefixed with `handle`; helper functions have no prefix.
-10. Use comments to separate sections; no need for `useCallback` or `useMemo` in React 19.
 
 ## Steps
 
