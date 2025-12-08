@@ -16,6 +16,7 @@ export function IndexPage() {
     isRequestingPermission: false,
   });
   const shouldBlockContent = state.permissionStatus !== "granted";
+  const hasInitializedPermissionStatus = state.permissionStatus !== null;
 
   function handleRequestPermission() {
     const isNotificationSupported =
@@ -74,7 +75,7 @@ export function IndexPage() {
       <div className="flex w-full justify-center pb-4 pt-2">
         <Logo />
       </div>
-      {state.permissionStatus !== null && (
+      {hasInitializedPermissionStatus && (
         <>
           {shouldBlockContent ? (
             <div className="flex flex-col items-center justify-center flex-1 gap-6 p-4">
