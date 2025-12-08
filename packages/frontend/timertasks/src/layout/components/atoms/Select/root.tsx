@@ -1,15 +1,11 @@
 import * as RadixSelect from "@radix-ui/react-select";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import type { ReactNode } from "react";
-
-export interface SelectOption {
-  label: string;
-  value: string;
-  disabled?: boolean;
-}
+import type { SelectionOptionProps } from "./option.tsx";
+import { SelectOption } from "./option.tsx";
 
 export interface SelectRootProps {
-  options: SelectOption[];
+  options: SelectionOptionProps[];
   value?: string;
   defaultValue?: string;
   name?: string;
@@ -34,7 +30,14 @@ export function SelectRoot(props: SelectRootProps) {
             <ChevronUp className="h-4 w-4" />
           </RadixSelect.ScrollUpButton>
           <RadixSelect.Viewport className="p-2">
-            {props.options.map(renderOption)}
+            {props.options.map((option) => (
+              <SelectOption
+                key={option.value}
+                label={option.label}
+                value={option.value}
+                disabled={option.disabled}
+              />
+            ))}
           </RadixSelect.Viewport>
           <RadixSelect.ScrollDownButton className="flex items-center justify-center p-2 text-Black-100">
             <ChevronDown className="h-4 w-4" />
@@ -42,21 +45,5 @@ export function SelectRoot(props: SelectRootProps) {
         </RadixSelect.Content>
       </RadixSelect.Portal>
     </RadixSelect.Root>
-  );
-}
-
-function renderOption(option: SelectOption) {
-  return (
-    <RadixSelect.Item
-      key={option.value}
-      value={option.value}
-      disabled={option.disabled}
-      className="relative flex cursor-pointer select-none items-center gap-2 rounded-[10px] px-3 py-2 text-[12px] leading-normal text-Black-700 outline-none transition-colors data-highlighted:bg-Green-100 data-highlighted:text-Black-900 data-disabled:cursor-not-allowed data-disabled:opacity-50"
-    >
-      <RadixSelect.ItemIndicator>
-        <Check className="h-4 w-4 text-Green-400" />
-      </RadixSelect.ItemIndicator>
-      <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
-    </RadixSelect.Item>
   );
 }
