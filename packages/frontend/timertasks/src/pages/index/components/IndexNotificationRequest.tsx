@@ -1,14 +1,67 @@
+import { useAtom } from "jotai";
 import { BellOff } from "lucide-react";
+import { useEffect } from "react";
 import { Box } from "../../../layout/components/atoms/Box";
+import { notificationPermissionAtom } from "../states/notification-permission";
 
-interface IndexNotificationRequestProps {
-  permissionStatus: NotificationPermission | null;
-  isRequestingPermission: boolean;
-  onRequestPermission: () => void;
-}
+export function IndexNotificationRequest() {
+  const [stateNotificationPermission, setStateNotificationPermission] = useAtom(
+    notificationPermissionAtom
+  );
+  const isPermissionDenied =
+    stateNotificationPermission.permissionStatus === "denied";
 
-export function IndexNotificationRequest(props: IndexNotificationRequestProps) {
-  const isPermissionDenied = props.permissionStatus === "denied";
+  function handleRequestPermission() {
+    const isNotificationSupported =
+      typeof window !== "undefined" && typeof Notification !== "undefined";
+
+    if (!isNotificationSupported) {
+      setStateNotificationPermission((currentState) => ({
+        ...currentState,
+        permissionStatus: "denied",
+      }));
+      return;
+    }
+
+    setStateNotificationPermission((currentState) => ({
+      ...currentState,
+      isRequestingPermission: true,
+    }));
+
+    Notification.requestPermission()
+      .then((permissionStatus) => {
+        setStateNotificationPermission((currentState) => ({
+          ...currentState,
+          permissionStatus: permissionStatus,
+          isRequestingPermission: false,
+        }));
+      })
+      .catch(() => {
+        setStateNotificationPermission((currentState) => ({
+          ...currentState,
+          permissionStatus: "denied",
+          isRequestingPermission: false,
+        }));
+      });
+  }
+
+  useEffect(() => {
+    const isNotificationSupported =
+      typeof window !== "undefined" && typeof Notification !== "undefined";
+
+    if (!isNotificationSupported) {
+      setStateNotificationPermission((currentState) => ({
+        ...currentState,
+        permissionStatus: "denied",
+      }));
+      return;
+    }
+
+    setStateNotificationPermission((currentState) => ({
+      ...currentState,
+      permissionStatus: Notification.permission,
+    }));
+  }, []);
 
   return (
     <Box className="w-full max-w-xl p-8 flex flex-col items-center gap-5 text-center">
@@ -25,11 +78,11 @@ export function IndexNotificationRequest(props: IndexNotificationRequestProps) {
         </p>
       </div>
       <button
-        onClick={props.onRequestPermission}
-        disabled={props.isRequestingPermission}
+        onClick={handleRequestPermission}
+        disabled={stateNotificationPermission.isRequestingPermission}
         className="px-5 py-3 rounded-full bg-Blue-500 text-White font-semibold hover:bg-Blue-400 transition disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {props.isRequestingPermission
+        {stateNotificationPermission.isRequestingPermission
           ? "Requesting permission..."
           : "Allow notifications"}
       </button>

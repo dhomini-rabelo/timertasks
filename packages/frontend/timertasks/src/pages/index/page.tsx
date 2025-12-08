@@ -1,74 +1,17 @@
-import { useEffect, useState } from "react";
+import { useAtomValue } from "jotai";
 import { Logo } from "../../layout/components/atoms/Logo";
 import { IndexNotificationRequest } from "./components/IndexNotificationRequest";
 import { IndexScore } from "./components/IndexScore";
 import { IndexTasks } from "./components/IndexTasks/IndexTasks";
 import { IndexTimer } from "./components/IndexTimer";
-
-interface IndexPageState {
-  permissionStatus: NotificationPermission | null;
-  isRequestingPermission: boolean;
-}
+import { notificationPermissionAtom } from "./states/notification-permission";
 
 export function IndexPage() {
-  const [state, setState] = useState<IndexPageState>({
-    permissionStatus: null,
-    isRequestingPermission: false,
-  });
-  const shouldBlockContent = state.permissionStatus !== "granted";
-  const hasInitializedPermissionStatus = state.permissionStatus !== null;
-
-  function handleRequestPermission() {
-    const isNotificationSupported =
-      typeof window !== "undefined" && typeof Notification !== "undefined";
-
-    if (!isNotificationSupported) {
-      setState((currentState) => ({
-        ...currentState,
-        permissionStatus: "denied",
-      }));
-      return;
-    }
-
-    setState((currentState) => ({
-      ...currentState,
-      isRequestingPermission: true,
-    }));
-
-    Notification.requestPermission()
-      .then((permissionStatus) => {
-        setState((currentState) => ({
-          ...currentState,
-          permissionStatus: permissionStatus,
-          isRequestingPermission: false,
-        }));
-      })
-      .catch(() => {
-        setState((currentState) => ({
-          ...currentState,
-          permissionStatus: "denied",
-          isRequestingPermission: false,
-        }));
-      });
-  }
-
-  useEffect(() => {
-    const isNotificationSupported =
-      typeof window !== "undefined" && typeof Notification !== "undefined";
-
-    if (!isNotificationSupported) {
-      setState((currentState) => ({
-        ...currentState,
-        permissionStatus: "denied",
-      }));
-      return;
-    }
-
-    setState((currentState) => ({
-      ...currentState,
-      permissionStatus: Notification.permission,
-    }));
-  }, [setState]);
+  const stateNotificationPermission = useAtomValue(notificationPermissionAtom);
+  const shouldBlockContent =
+    stateNotificationPermission.permissionStatus !== "granted";
+  const hasInitializedPermissionStatus =
+    stateNotificationPermission.permissionStatus !== null;
 
   return (
     <div className="body-df min-h-screen max-h-screen flex flex-col items-center justify-center p-4">
@@ -79,11 +22,7 @@ export function IndexPage() {
         <>
           {shouldBlockContent ? (
             <div className="flex flex-col items-center justify-center flex-1 gap-6 p-4">
-              <IndexNotificationRequest
-                permissionStatus={state.permissionStatus}
-                isRequestingPermission={state.isRequestingPermission}
-                onRequestPermission={handleRequestPermission}
-              />
+              <IndexNotificationRequest />
             </div>
           ) : (
             <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-16 w-full">
