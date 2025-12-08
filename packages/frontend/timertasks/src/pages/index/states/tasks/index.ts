@@ -1,6 +1,7 @@
 import { create } from "zustand";
+import { getActiveTask } from "../../components/IndexTasks/utils";
 
-import { getActiveTask } from "../components/IndexTasks/utils";
+
 
 export type SubTaskTimeEvent = {
   type: "start" | "stop" | "complete";

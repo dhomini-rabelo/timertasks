@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useTasksState, type Task } from "../../states/tasks";
+import { useTasksState, type Task } from "../states/tasks";
 
 const localStorageKey = "timertasks:tasks";
 
