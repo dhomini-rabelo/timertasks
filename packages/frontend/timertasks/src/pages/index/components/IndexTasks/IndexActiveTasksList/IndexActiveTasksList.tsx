@@ -61,10 +61,6 @@ export function IndexActiveTasksList({
     }
   }
 
-  if (activeTasks.length === 0) {
-    return null;
-  }
-
   return (
     <DndContext
       sensors={sensors}

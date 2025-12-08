@@ -1,6 +1,6 @@
 import { Check, X } from "lucide-react";
 import { useState } from "react";
-import { Input } from "../../../../layout/components/atoms/Input";
+import { Input } from "../../../../../layout/components/atoms/Input";
 
 interface IndexEditInputProps {
   initialValue: string;
