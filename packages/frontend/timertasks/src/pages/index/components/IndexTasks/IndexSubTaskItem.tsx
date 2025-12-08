@@ -12,8 +12,11 @@ import { formatTime } from "../../../../code/utils/date";
 import { Timer } from "../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../layout/components/common/Timer/hooks/useCountUpTimer";
 import type { SubTask } from "../../hooks/useTasks";
+import {
+  calculateTotalTimeInSeconds,
+  shouldAutoStart,
+} from "../../hooks/useTasks/utils";
 import { useCountdownTimerState } from "../../states/countdownTimer";
-import { calculateTotalTimeInSeconds, shouldAutoStart } from "../../utils";
 import { IndexAlertSelect } from "./IndexAlertSelect";
 import { IndexDebugTimer, type IndexDebugTimerHandle } from "./IndexDebugTimer";
 import { IndexEditInput } from "./IndexEditInput";
