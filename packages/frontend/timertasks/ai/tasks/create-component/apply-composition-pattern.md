@@ -24,7 +24,6 @@ For general coding standards (Tailwind v4, globals, icons, exports, handlers), f
 2. Root owns behavior and shared context; subcomponents are presentational or narrowly scoped.
 3. Subcomponents should never duplicate root props; pass only what they need.
 4. Expose the API via a named object (e.g., `export const Select = { Root, Trigger, DisplayValue, Option };`).
-5. Keep prop names descriptive; avoid magic values.
 
 ## Steps
 
