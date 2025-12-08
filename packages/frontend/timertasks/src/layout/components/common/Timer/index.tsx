@@ -18,6 +18,24 @@ function getPercentage(totalSeconds: number, currentSeconds: number) {
   }
 }
 
+function getCircleDashoffset(
+  initialTimeInMinutes: number,
+  timerDisplayInSeconds: string
+) {
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
+  const totalSeconds = initialTimeInMinutes * 60;
+  const currentSeconds = Number(timerDisplayInSeconds);
+  const percentage = getPercentage(totalSeconds, currentSeconds);
+  const strokeDashoffset = circumference - percentage * circumference;
+
+  return {
+    circumference,
+    radius,
+    strokeDashoffset,
+  };
+}
+
 export function Timer({
   className,
   timerDisplayInSeconds,
@@ -29,13 +47,10 @@ export function Timer({
   const secondsLeft = (Number(timerDisplayInSeconds) % 60)
     .toString()
     .padStart(2, "0");
-
-  const radius = 45;
-  const circumference = 2 * Math.PI * radius;
-  const totalSeconds = initialTimeInMinutes * 60;
-  const currentSeconds = Number(timerDisplayInSeconds);
-  const percentage = getPercentage(totalSeconds, currentSeconds);
-  const strokeDashoffset = circumference - percentage * circumference;
+  const { radius, circumference, strokeDashoffset } = getCircleDashoffset(
+    initialTimeInMinutes,
+    timerDisplayInSeconds
+  );
 
   return (
     <div
@@ -65,5 +80,3 @@ export function Timer({
     </div>
   );
 }
-
-export default Timer;
