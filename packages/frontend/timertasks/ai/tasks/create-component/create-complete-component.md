@@ -21,6 +21,10 @@ If any required information is missing, ask for it before starting.
 
 - destination_path: string // example: src/layout/components/{atoms|molecules|organisms|common}/{component_name}
 
+## Context
+
+- common components are simple components that does not use many atoms, molecules or organisms.
+
 ## Rules
 
 1. Use Tailwind v4 for styling and global colors from `src/layout/styles/global.css`. Add missing colors there whenever necessary.
