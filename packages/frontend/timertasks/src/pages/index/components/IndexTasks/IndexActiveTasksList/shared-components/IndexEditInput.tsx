@@ -1,27 +1,45 @@
+import { useAtom } from "jotai";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
 import { Input } from "../../../../../../layout/components/atoms/Input";
+import { useTasksState } from "../../../../states/tasks";
+import { indexTasksPageStateAtom } from "../../shared-state";
+import type { TaskListingMode } from "../../utils";
 
 interface IndexEditInputProps {
   initialValue: string;
-  onSave: (title: string) => void;
-  onCancel: () => void;
+  listingMode: TaskListingMode;
 }
 
 export function IndexEditInput({
   initialValue,
-  onSave,
-  onCancel,
+  listingMode,
 }: IndexEditInputProps) {
+  const saveEditingTask = useTasksState((props) =>
+    listingMode === "tasks-group"
+      ? props.actions.saveEditingTask
+      : props.actions.saveEditingSubtask
+  );
+  const [indexTasksPageState, setIndexTasksPageState] = useAtom(
+    indexTasksPageStateAtom
+  );
   const [title, setTitle] = useState(initialValue);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value);
   }
 
+  function handleCancel() {
+    setIndexTasksPageState((prev) => ({
+      ...prev,
+      editingTaskId: null,
+    }));
+  }
+
   function handleSave() {
-    if (title.trim()) {
-      onSave(title);
+    if (indexTasksPageState.editingTaskId && title.trim()) {
+      saveEditingTask(indexTasksPageState.editingTaskId, title);
+      handleCancel();
     }
   }
 
@@ -29,7 +47,7 @@ export function IndexEditInput({
     if (e.key === "Enter") {
       handleSave();
     } else if (e.key === "Escape") {
-      onCancel();
+      handleCancel();
     }
   }
 
@@ -43,7 +61,7 @@ export function IndexEditInput({
         autoFocus
       />
       <button
-        onClick={onCancel}
+        onClick={handleCancel}
         className="p-2 text-Red-400 hover:text-Red-500 transition-colors"
       >
         <X className="w-5 h-5" />

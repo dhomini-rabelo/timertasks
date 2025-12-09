@@ -1,4 +1,4 @@
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import {
   Check,
   GripVertical,
@@ -11,13 +11,14 @@ import { useEffect, useRef, useState } from "react";
 import { formatTime } from "../../../../../../code/utils/date";
 import { Timer } from "../../../../../../layout/components/common/Timer";
 import { useCountUpTimer } from "../../../../../../layout/components/common/Timer/hooks/useCountUpTimer";
-import type { SubTask } from "../../../../hooks/useStoredTasks";
+
+import { useCountdownTimerState } from "../../../../states/countdownTimer";
+import { useTasksState, type SubTask } from "../../../../states/tasks";
 import {
   calculateTotalTimeInSeconds,
   shouldAutoStart,
-} from "../../../../hooks/useStoredTasks/utils";
-import { useCountdownTimerState } from "../../../../states/countdownTimer";
-import { errorMessageAtom } from "../../shared-state";
+} from "../../../../states/tasks/utils";
+import { errorMessageAtom, indexTasksPageStateAtom } from "../../shared-state";
 import { IndexEditInput } from "../shared-components/IndexEditInput";
 import { IndexAlertSelect } from "./IndexAlertSelect";
 import { IndexDebugTimer, type IndexDebugTimerHandle } from "./IndexDebugTimer";
@@ -28,31 +29,23 @@ interface IndexSubTaskItemState {
 
 interface IndexSubTaskItemProps {
   task: SubTask;
-  isEditing: boolean;
   isActive: boolean;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
-  onSaveEditing: (title: string) => void;
-  onCancelEditing: () => void;
-  onExecuteSubtask: (id: string) => void;
-  onStopSubtask?: (id: string) => void;
-  onToggleSubtask: (id: string) => void;
   dragHandleProps?: Record<string, unknown>;
 }
 
 export function IndexSubTaskItem({
   task,
-  isEditing,
   isActive,
-  onEdit,
-  onDelete,
-  onSaveEditing,
-  onCancelEditing,
-  onExecuteSubtask,
-  onStopSubtask,
-  onToggleSubtask,
   dragHandleProps,
 }: IndexSubTaskItemProps) {
+  const [indexTasksPageState, setIndexTasksPageState] = useAtom(
+    indexTasksPageStateAtom
+  );
+  const isEditing = indexTasksPageState.editingTaskId === task?.id;
+  const deleteTask = useTasksState((props) => props.actions.deleteSubtask);
+  const executeSubTask = useTasksState((props) => props.actions.executeSubtask);
+  const stopSubtask = useTasksState((props) => props.actions.stopSubtask);
+  const toggleSubtask = useTasksState((props) => props.actions.toggleSubtask);
   const isGlobalTimerRunning = useCountdownTimerState(
     (store) => store.state.isRunning
   );
@@ -72,13 +65,13 @@ export function IndexSubTaskItem({
   function handleToggleSubtaskTimer(isGlobalTimerRunning: boolean) {
     if (!timerState.isRunning) {
       if (isGlobalTimerRunning) {
-        onExecuteSubtask(task.id);
+        executeSubTask(task.id);
         timerActions.start();
       } else {
         dispatchErrorMessage("Global timer is not running");
       }
     } else {
-      onStopSubtask?.(task.id);
+      stopSubtask(task.id);
       timerActions.stop();
     }
   }
@@ -105,6 +98,13 @@ export function IndexSubTaskItem({
           silent: true,
         });
       });
+  }
+
+  function handleEditTask(taskId: string) {
+    setIndexTasksPageState((prev) => ({
+      ...prev,
+      editingTaskId: taskId,
+    }));
   }
 
   useEffect(() => {
@@ -152,11 +152,7 @@ export function IndexSubTaskItem({
         }`}
       >
         {isEditing ? (
-          <IndexEditInput
-            initialValue={task.title}
-            onSave={onSaveEditing}
-            onCancel={onCancelEditing}
-          />
+          <IndexEditInput initialValue={task.title} listingMode="subtasks" />
         ) : (
           <>
             <div className="flex items-center gap-4 flex-1">
@@ -201,14 +197,14 @@ export function IndexSubTaskItem({
                   <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all">
                     {!task.isRunning && (
                       <button
-                        onClick={() => onDelete(task.id)}
+                        onClick={() => deleteTask(task.id)}
                         className="text-Red-400 hover:text-Red-500 transition-all p-2"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
                     )}
                     <button
-                      onClick={() => onEdit(task.id)}
+                      onClick={() => handleEditTask(task.id)}
                       className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
                     >
                       <Pencil className="w-5 h-5" />
@@ -234,7 +230,7 @@ export function IndexSubTaskItem({
 
                   {timerState.isRunning && (
                     <button
-                      onClick={() => onToggleSubtask(task.id)}
+                      onClick={() => toggleSubtask(task.id)}
                       className="transition-all p-2"
                       title="Mark as complete"
                     >
@@ -254,14 +250,14 @@ export function IndexSubTaskItem({
             <div className="flex items-center gap-1 transition-all">
               {!task.isRunning && (
                 <button
-                  onClick={() => onDelete(task.id)}
+                  onClick={() => deleteTask(task.id)}
                   className="text-Red-400 hover:text-Red-500 transition-all p-2"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
               )}
               <button
-                onClick={() => onEdit(task.id)}
+                onClick={() => handleEditTask(task.id)}
                 className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
               >
                 <Pencil className="w-5 h-5" />

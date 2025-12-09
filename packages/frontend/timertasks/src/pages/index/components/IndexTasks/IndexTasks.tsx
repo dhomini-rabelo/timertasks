@@ -1,79 +1,22 @@
-import { useState } from "react";
+import { useAtom } from "jotai";
 import { Box } from "../../../../layout/components/atoms/Box";
-import { useTasks } from "../../hooks/useStoredTasks";
+import { useStoredTasks } from "../../hooks/useStoredTasks";
 import { IndexActiveTasksList } from "./IndexActiveTasksList/IndexActiveTasksList";
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexErrorMessage } from "./IndexErrorMessage";
 import { IndexFooter } from "./IndexFooter/IndexFooter";
-import { getActiveTask, type ListingTask, type TaskListingMode } from "./utils";
-
-interface IndexTasksState {
-  editingTaskId: string | null;
-  inExecutionTaskId: string | null;
-}
+import { indexTasksPageStateAtom } from "./shared-state";
+import { getActiveTask, getTaskListingMode, type ListingTask } from "./utils";
 
 export function IndexTasks() {
-  const { state: taskState, actions: fullTaskActions } = useTasks();
-  const [state, setState] = useState<IndexTasksState>({
-    editingTaskId: null,
-    inExecutionTaskId: null,
-  });
-  const taskActions = {
-    addTask: state.inExecutionTaskId
-      ? fullTaskActions.addSubtask
-      : fullTaskActions.addTask,
-    deleteTask: state.inExecutionTaskId
-      ? fullTaskActions.deleteSubtask
-      : fullTaskActions.deleteTask,
-    saveEditingTask: state.inExecutionTaskId
-      ? fullTaskActions.saveEditingSubtask
-      : fullTaskActions.saveEditingTask,
-    reorderTasks: state.inExecutionTaskId
-      ? fullTaskActions.reorderSubtasks
-      : fullTaskActions.reorderTasks,
-    executeSubtask: fullTaskActions.executeSubtask,
-    stopSubtask: fullTaskActions.stopSubtask,
-    toggleTask: state.inExecutionTaskId
-      ? fullTaskActions.toggleSubtask
-      : fullTaskActions.toggleTask,
-  };
+  const tasks = useStoredTasks();
+  const [state, setState] = useAtom(indexTasksPageStateAtom);
   const listingTasks: ListingTask[] = state.inExecutionTaskId
-    ? taskState.tasks.find((task) => task.id === state.inExecutionTaskId)
-        ?.subtasks || []
-    : taskState.tasks;
+    ? tasks.find((task) => task.id === state.inExecutionTaskId)?.subtasks || []
+    : tasks;
   const activeTasks = listingTasks.filter((task) => !task.completed);
-  const listingMode: TaskListingMode = state.inExecutionTaskId
-    ? "subtasks"
-    : "tasks-group";
-  const activeTask = getActiveTask(taskState.tasks);
-
-  function handleStartEditingTask(id: string) {
-    setState((prev) => ({
-      ...prev,
-      editingTaskId: id,
-    }));
-  }
-
-  function handleCancelEditingTask() {
-    setState((prev) => ({
-      ...prev,
-      editingTaskId: null,
-    }));
-  }
-
-  function handleSaveEditingTask(title: string) {
-    if (state.editingTaskId) {
-      taskActions.saveEditingTask(state.editingTaskId, title);
-      handleCancelEditingTask();
-    }
-  }
-
-  function handleEnterSubtasks(taskId: string) {
-    setState((prev) => ({
-      ...prev,
-      inExecutionTaskId: taskId,
-    }));
-  }
+  const listingMode = getTaskListingMode(state.inExecutionTaskId);
+  const activeTask = getActiveTask(tasks);
 
   function handleExitSubtasks() {
     setState((prev) => ({
@@ -133,20 +76,7 @@ export function IndexTasks() {
               </span>
             </div>
           ) : (
-            <IndexActiveTasksList
-              activeTasks={activeTasks}
-              editingTaskId={state.editingTaskId}
-              onDragEnd={taskActions.reorderTasks}
-              onEdit={handleStartEditingTask}
-              onDelete={taskActions.deleteTask}
-              onSaveEditing={handleSaveEditingTask}
-              onCancelEditing={handleCancelEditingTask}
-              onEnterSubtasks={handleEnterSubtasks}
-              onExecuteSubtask={taskActions.executeSubtask}
-              onStopSubtask={taskActions.stopSubtask}
-              onToggleSubtask={taskActions.toggleTask}
-              showSubtasksArrow={state.inExecutionTaskId === null}
-            />
+            <IndexActiveTasksList inExecutionTaskId={state.inExecutionTaskId} />
           )}
         </div>
 

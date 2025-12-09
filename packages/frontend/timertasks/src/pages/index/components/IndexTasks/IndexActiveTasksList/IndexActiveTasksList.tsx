@@ -12,39 +12,27 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { ListingTask } from "../utils";
-import { getActiveTask } from "../utils";
+import { useListingTasks } from "../../../hooks/useListingTasks";
+import { useTasksState } from "../../../states/tasks";
+import { getActiveTask, getTaskListingMode } from "../utils";
 import { IndexSortableTaskItem } from "./IndexSortableTaskItem";
 
 interface IndexActiveTasksListProps {
-  activeTasks: ListingTask[];
-  editingTaskId: string | null;
-  onDragEnd: (activeId: string, overId: string) => void;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
-  onSaveEditing: (title: string) => void;
-  onCancelEditing: () => void;
-  onEnterSubtasks: (id: string) => void;
-  onExecuteSubtask: (id: string) => void;
-  onStopSubtask: (id: string) => void;
-  onToggleSubtask: (id: string) => void;
-  showSubtasksArrow: boolean;
+  inExecutionTaskId: string | null;
 }
 
 export function IndexActiveTasksList({
-  activeTasks,
-  editingTaskId,
-  onDragEnd,
-  onEdit,
-  onDelete,
-  onSaveEditing,
-  onCancelEditing,
-  onEnterSubtasks,
-  onExecuteSubtask,
-  onStopSubtask,
-  onToggleSubtask,
-  showSubtasksArrow,
+  inExecutionTaskId,
 }: IndexActiveTasksListProps) {
+  const listMode = getTaskListingMode(inExecutionTaskId);
+  const reorderTasks = useTasksState((props) =>
+    listMode === "tasks-group"
+      ? props.actions.reorderTasks
+      : props.actions.reorderSubtasks
+  );
+  const { activeTasks } = useListingTasks({
+    inExecutionTaskId,
+  });
   const activeTask = getActiveTask(activeTasks);
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -57,7 +45,7 @@ export function IndexActiveTasksList({
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      onDragEnd(active.id as string, over.id as string);
+      reorderTasks(active.id as string, over.id as string);
     }
   }
 
@@ -75,17 +63,8 @@ export function IndexActiveTasksList({
           <IndexSortableTaskItem
             key={task.id}
             task={task}
-            isEditing={editingTaskId === task.id}
+            listMode={listMode}
             isActive={task.id === activeTask?.id}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onSaveEditing={onSaveEditing}
-            onCancelEditing={onCancelEditing}
-            onEnterSubtasks={onEnterSubtasks}
-            onExecuteSubtask={onExecuteSubtask}
-            onStopSubtask={onStopSubtask}
-            onToggleSubtask={onToggleSubtask}
-            showSubtasksArrow={showSubtasksArrow}
           />
         ))}
       </SortableContext>

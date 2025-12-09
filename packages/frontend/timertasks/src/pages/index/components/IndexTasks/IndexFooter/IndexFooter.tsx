@@ -1,13 +1,13 @@
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../../../../layout/components/atoms/Button";
+import { useListingTasks } from "../../../hooks/useListingTasks";
 import { useTasksState } from "../../../states/tasks";
-import type { ListingTask } from "../utils";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
 
 interface IndexFooterProps {
   inExecutionTaskId: string | null;
-  onFinishTask?: () => void;
+  onFinishTask: () => void;
 }
 
 interface IndexTasksState {
@@ -21,12 +21,10 @@ export function IndexFooter({
   const [state, setState] = useState<IndexTasksState>({
     showCompleted: false,
   });
-  const tasks = useTasksState((props) => props.state.tasks);
   const toggleTask = useTasksState((props) => props.actions.toggleTask);
-  const listingTasks: ListingTask[] = inExecutionTaskId
-    ? tasks.find((task) => task.id === inExecutionTaskId)?.subtasks || []
-    : tasks;
-  const completedTasks = listingTasks.filter((task) => task.completed);
+  const { listingTasks, completedTasks } = useListingTasks({
+    inExecutionTaskId,
+  });
   const canFinishTask =
     inExecutionTaskId &&
     listingTasks.length > 0 &&

@@ -1,37 +1,46 @@
+import { useAtom } from "jotai";
 import { ChevronRight, GripVertical, Pencil, Trash2 } from "lucide-react";
-import type { SubTask, Task } from "../../../hooks/useStoredTasks";
+import { useTasksState, type SubTask, type Task } from "../../../states/tasks";
+import { indexTasksPageStateAtom } from "../shared-state";
 import { getActiveTask } from "../utils";
 import { IndexEditInput } from "./shared-components/IndexEditInput";
 
 interface IndexTaskItemProps {
   task: Task;
-  isEditing: boolean;
   isActive: boolean;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
-  onSaveEditing: (title: string) => void;
-  onCancelEditing: () => void;
-  onEnterSubtasks: (id: string) => void;
   dragHandleProps?: Record<string, unknown>;
 }
 
 export function IndexTaskItem({
   task,
-  isEditing,
   isActive,
-  onEdit,
-  onDelete,
-  onSaveEditing,
-  onCancelEditing,
-  onEnterSubtasks,
   dragHandleProps,
 }: IndexTaskItemProps) {
+  const [indexTasksPageState, setIndexTasksPageState] = useAtom(
+    indexTasksPageStateAtom
+  );
+  const isEditing = indexTasksPageState.editingTaskId === task?.id;
+  const deleteTask = useTasksState((props) => props.actions.deleteTask);
   const activeSubtask = getActiveTask(task.subtasks) as SubTask | undefined;
   const hasSubtaskBeenStarted = activeSubtask?.timeEvents.some(
     (event) => event.type === "start"
   );
   const isSubtaskTimerActive =
     activeSubtask?.timeEvents.at(-1)?.type === "start";
+
+  function handleEditTask(taskId: string) {
+    setIndexTasksPageState((prev) => ({
+      ...prev,
+      editingTaskId: taskId,
+    }));
+  }
+
+  function handleEnterSubtasks(taskId: string) {
+    setIndexTasksPageState((prev) => ({
+      ...prev,
+      inExecutionTaskId: taskId,
+    }));
+  }
 
   return (
     <>
@@ -43,11 +52,7 @@ export function IndexTaskItem({
         }`}
       >
         {isEditing ? (
-          <IndexEditInput
-            initialValue={task.title}
-            onSave={onSaveEditing}
-            onCancel={onCancelEditing}
-          />
+          <IndexEditInput initialValue={task.title} listingMode="tasks-group" />
         ) : (
           <>
             <div className="flex items-center gap-4 flex-1">
@@ -75,14 +80,14 @@ export function IndexTaskItem({
               <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all mr-2">
                 {!task.isRunning && (
                   <button
-                    onClick={() => onDelete(task.id)}
+                    onClick={() => deleteTask(task.id)}
                     className="text-Red-400 hover:text-Red-500 transition-all p-2"
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>
                 )}
                 <button
-                  onClick={() => onEdit(task.id)}
+                  onClick={() => handleEditTask(task.id)}
                   className="text-Yellow-400 hover:text-Yellow-500 transition-all p-2"
                 >
                   <Pencil className="w-5 h-5" />
@@ -90,7 +95,7 @@ export function IndexTaskItem({
               </div>
               {isActive && (
                 <button
-                  onClick={() => onEnterSubtasks(task.id)}
+                  onClick={() => handleEnterSubtasks(task.id)}
                   className="text-Blue-400 hover:text-Blue-500 transition-all p-2"
                 >
                   <ChevronRight className="w-5 h-5" />

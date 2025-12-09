@@ -1,38 +1,20 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { SubTask, Task } from "../../../hooks/useStoredTasks";
-import type { ListingTask } from "../utils";
+import type { SubTask, Task } from "../../../states/tasks";
+import type { ListingTask, TaskListingMode } from "../utils";
 import { IndexSubTaskItem } from "./IndexSubTaskItem/IndexSubTaskItem";
 import { IndexTaskItem } from "./IndexTaskItem";
 
 interface IndexSortableTaskItemProps {
   task: ListingTask;
-  isEditing: boolean;
   isActive: boolean;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
-  onSaveEditing: (title: string) => void;
-  onCancelEditing: () => void;
-  onEnterSubtasks: (id: string) => void;
-  onExecuteSubtask: (id: string) => void;
-  onStopSubtask: (id: string) => void;
-  onToggleSubtask: (id: string) => void;
-  showSubtasksArrow: boolean;
+  listMode: TaskListingMode;
 }
 
 export function IndexSortableTaskItem({
   task,
-  isEditing,
   isActive,
-  onEdit,
-  onDelete,
-  onSaveEditing,
-  onCancelEditing,
-  onEnterSubtasks,
-  onExecuteSubtask,
-  onStopSubtask,
-  onToggleSubtask,
-  showSubtasksArrow,
+  listMode,
 }: IndexSortableTaskItemProps) {
   const {
     attributes,
@@ -52,28 +34,19 @@ export function IndexSortableTaskItem({
 
   const commonProps = {
     task,
-    isEditing,
     isActive,
-    onEdit,
-    onDelete,
-    onSaveEditing,
-    onCancelEditing,
-    onExecuteSubtask,
-    onStopSubtask,
-    onToggleSubtask,
     dragHandleProps: { ...attributes, ...listeners },
     isDragging,
   };
 
   return (
     <div ref={setNodeRef} style={style}>
-      {showSubtasksArrow ? (
+      {listMode ? (
         <IndexTaskItem
           {...{
             ...commonProps,
             task: task as Task,
           }}
-          onEnterSubtasks={onEnterSubtasks}
         />
       ) : (
         <IndexSubTaskItem
