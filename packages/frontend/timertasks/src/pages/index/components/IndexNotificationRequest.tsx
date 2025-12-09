@@ -1,6 +1,5 @@
 import { useAtom } from "jotai";
 import { BellOff } from "lucide-react";
-import { useEffect } from "react";
 import { Box } from "../../../layout/components/atoms/Box";
 import { notificationPermissionAtom } from "../states/notification-permission";
 
@@ -44,24 +43,6 @@ export function IndexNotificationRequest() {
         }));
       });
   }
-
-  useEffect(() => {
-    const isNotificationSupported =
-      typeof window !== "undefined" && typeof Notification !== "undefined";
-
-    if (!isNotificationSupported) {
-      setStateNotificationPermission((currentState) => ({
-        ...currentState,
-        permissionStatus: "denied",
-      }));
-      return;
-    }
-
-    setStateNotificationPermission((currentState) => ({
-      ...currentState,
-      permissionStatus: Notification.permission,
-    }));
-  }, []);
 
   return (
     <Box className="w-full max-w-xl p-8 flex flex-col items-center gap-5 text-center">

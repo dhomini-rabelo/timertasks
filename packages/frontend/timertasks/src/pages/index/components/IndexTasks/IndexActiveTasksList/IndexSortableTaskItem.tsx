@@ -41,7 +41,7 @@ export function IndexSortableTaskItem({
 
   return (
     <div ref={setNodeRef} style={style}>
-      {listMode ? (
+      {listMode === "tasks-group" ? (
         <IndexTaskItem
           {...{
             ...commonProps,
