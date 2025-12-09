@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { Button } from "../../../../layout/components/atoms/Button";
 import { Input } from "../../../../layout/components/atoms/Input";
+import { useTasksState } from "../../states/tasks";
 import type { TaskListingMode } from "./utils";
 
 interface IndexAddInputProps {
-  onAdd: (title: string) => void;
   listingMode: TaskListingMode;
 }
 
-export function IndexAddInput({ onAdd, listingMode }: IndexAddInputProps) {
+export function IndexAddInput({ listingMode }: IndexAddInputProps) {
   const [title, setTitle] = useState("");
+  const addTask = useTasksState((props) =>
+    listingMode === "tasks-group"
+      ? props.actions.addTask
+      : props.actions.addSubtask
+  );
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value);
@@ -23,7 +28,7 @@ export function IndexAddInput({ onAdd, listingMode }: IndexAddInputProps) {
 
   function handleAdd() {
     if (title.trim()) {
-      onAdd(title);
+      addTask(title);
       setTitle("");
     }
   }

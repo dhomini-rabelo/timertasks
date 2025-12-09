@@ -27,7 +27,6 @@ export function IndexFooter({
     ? tasks.find((task) => task.id === inExecutionTaskId)?.subtasks || []
     : tasks;
   const completedTasks = listingTasks.filter((task) => task.completed);
-
   const canFinishTask =
     inExecutionTaskId &&
     listingTasks.length > 0 &&

@@ -5,7 +5,7 @@ import { IndexActiveTasksList } from "./IndexActiveTasksList/IndexActiveTasksLis
 import { IndexAddInput } from "./IndexAddInput";
 import { IndexErrorMessage } from "./IndexErrorMessage";
 import { IndexFooter } from "./IndexFooter/IndexFooter";
-import { getActiveTask, type ListingTask } from "./utils";
+import { getActiveTask, type ListingTask, type TaskListingMode } from "./utils";
 
 interface IndexTasksState {
   editingTaskId: string | null;
@@ -42,7 +42,9 @@ export function IndexTasks() {
         ?.subtasks || []
     : taskState.tasks;
   const activeTasks = listingTasks.filter((task) => !task.completed);
-  const listingMode = state.inExecutionTaskId ? "subtasks" : "tasks-group";
+  const listingMode: TaskListingMode = state.inExecutionTaskId
+    ? "subtasks"
+    : "tasks-group";
   const activeTask = getActiveTask(taskState.tasks);
 
   function handleStartEditingTask(id: string) {
@@ -113,7 +115,7 @@ export function IndexTasks() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <IndexAddInput onAdd={taskActions.addTask} listingMode={listingMode} />
+        <IndexAddInput listingMode={listingMode} />
 
         <IndexErrorMessage />
 
