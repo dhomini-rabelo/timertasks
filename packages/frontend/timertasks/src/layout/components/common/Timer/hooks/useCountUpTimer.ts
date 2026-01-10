@@ -6,7 +6,7 @@ interface TimerState {
   isRunning: boolean;
 }
 
-interface UseCountUpTimerOptions {
+interface UseCountUpTimerProps {
   initialSeconds?: number;
   autoStart?: boolean;
 }
@@ -14,7 +14,7 @@ interface UseCountUpTimerOptions {
 export function useCountUpTimer({
   initialSeconds = 0,
   autoStart = false,
-}: UseCountUpTimerOptions = {}) {
+}: UseCountUpTimerProps = {}) {
   const [state, setState] = useState<TimerState>({
     currentTimeInSeconds: initialSeconds,
     isRunning: autoStart,
