@@ -44,7 +44,7 @@ You are a Micro Coding Agent, which means that you might have to look for a litt
     - To get a typing response
     - To understand how a module works
   - Instruction: Use `search/fileSearch` with the import path as the `query`:
-    - Example: If you see `import Button from './components/Button'`, use `search/fileSearch` with `query: '**/components/Button*'` to find the file. The query '**/components/Button*' will match files both '**/Button.tsx' and '**/Button/index.tsx'.
+    - Example: If you see `import Button from './components/Button'`, use `search/fileSearch` with `query: '**/components/Button{.ts,.tsx,/**}'` to find the file. The query '**/components/Button{.ts,.tsx,/**}' will match files both '**/Button.tsx' and '**/Button/index.tsx'.
 
 - To find usages of a function, variable, class, component, term or text in the codebase:
   - Use `search/textSearch` with the name as the `query`:
