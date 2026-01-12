@@ -1,8 +1,9 @@
-import { Check } from "lucide-react";
+import { Check, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../../../../../layout/components/atoms/Button";
 import { useListingTasks } from "../../../hooks/useListingTasks";
 import { useTasksState } from "../../../states/tasks";
+import { getTaskListingMode } from "../utils";
 import { IndexCompletedTaskItem } from "./IndexCompletedTaskItem";
 
 interface IndexFooterProps {
@@ -22,9 +23,14 @@ export function IndexFooter({
     showCompleted: false,
   });
   const toggleTask = useTasksState((props) => props.actions.toggleTask);
+  const clearTasks = useTasksState((props) => props.actions.clearTasks);
+  const clearSubtasks = useTasksState((props) => props.actions.clearSubtasks);
+
   const { listingTasks, completedTasks } = useListingTasks({
     inExecutionTaskId,
   });
+  const listingMode = getTaskListingMode(inExecutionTaskId);
+
   const canFinishTask =
     inExecutionTaskId &&
     listingTasks.length > 0 &&
@@ -37,6 +43,14 @@ export function IndexFooter({
 
     if (onFinishTask) {
       onFinishTask();
+    }
+  }
+
+  function handleReset() {
+    if (listingMode === "subtasks") {
+      clearSubtasks();
+    } else {
+      clearTasks();
     }
   }
 
@@ -54,6 +68,16 @@ export function IndexFooter({
           {completedTasks.length} of {listingTasks.length} completed
         </span>
         <div className="flex items-center gap-2">
+          {listingTasks.length > 0 && (
+            <Button
+              variant="secondary"
+              onClick={handleReset}
+              className="text-xs px-3 py-1.5 h-auto flex items-center gap-1.5"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              Reset
+            </Button>
+          )}
           {completedTasks.length > 0 && (
             <Button
               variant="secondary"

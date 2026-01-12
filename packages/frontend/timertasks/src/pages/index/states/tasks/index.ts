@@ -35,6 +35,8 @@ interface TasksActions {
   deleteTask: (id: string) => void;
   saveEditingTask: (id: string, title: string) => void;
   reorderTasks: (activeId: string, overId: string) => void;
+  clearTasks: () => void;
+
   addSubtask: (title: string) => void;
   toggleSubtask: (subtaskId: string) => void;
   deleteSubtask: (subtaskId: string) => void;
@@ -42,6 +44,7 @@ interface TasksActions {
   reorderSubtasks: (activeId: string, overId: string) => void;
   executeSubtask: (subtaskId: string) => void;
   stopSubtask: (subtaskId: string) => void;
+  clearSubtasks: () => void;
 }
 
 interface TasksStore {
@@ -384,17 +387,46 @@ export const useTasksState = create<TasksStore>((set, get) => {
     });
   }
 
+  function clearTasks() {
+    setState({
+      tasks: [],
+    });
+  }
+
+  function clearSubtasks() {
+    set((store) => {
+      const activeTask = getActiveTask(store.state.tasks);
+      if (!activeTask) {
+        return store;
+      }
+
+      return {
+        state: {
+          tasks: store.state.tasks.map((task) =>
+            task.id === activeTask.id
+              ? { ...task, subtasks: [] }
+              : task
+          ),
+        },
+        actions: store.actions,
+      };
+    });
+  }
+
   return {
     state: {
       tasks: [],
     },
     actions: {
       setTasksState,
+      
       addTask,
       toggleTask,
       deleteTask,
       saveEditingTask,
       reorderTasks,
+      clearTasks,
+
       addSubtask,
       toggleSubtask,
       deleteSubtask,
@@ -402,6 +434,7 @@ export const useTasksState = create<TasksStore>((set, get) => {
       reorderSubtasks,
       executeSubtask,
       stopSubtask,
+      clearSubtasks,
     },
   };
 });
