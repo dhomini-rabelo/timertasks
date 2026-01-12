@@ -1,5 +1,6 @@
-import { Check, RotateCcw } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
 import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 import { Button } from "../../../../../layout/components/atoms/Button";
 import { useListingTasks } from "../../../hooks/useListingTasks";
 import { useTasksState } from "../../../states/tasks";
@@ -64,9 +65,27 @@ export function IndexFooter({
   return (
     <div>
       <div className="flex items-center justify-between py-2 border-b border-Black-100/20">
-        <span className="text-sm text-Black-450 font-medium">
-          {completedTasks.length} of {listingTasks.length} completed
-        </span>
+        <div
+          className={twMerge(
+            "flex items-center gap-1 transition-colors text-Black-450",
+            completedTasks.length > 0
+              ? "cursor-pointer hover:text-Black-300"
+              : ""
+          )}
+          onClick={
+            completedTasks.length > 0 ? handleToggleShowCompleted : undefined
+          }
+        >
+          <span className="text-sm font-medium">
+            {completedTasks.length} of {listingTasks.length} completed
+          </span>
+          {completedTasks.length > 0 &&
+            (state.showCompleted ? (
+              <ChevronUp className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5" />
+            ))}
+        </div>
         <div className="flex items-center gap-2">
           {listingTasks.length > 0 && (
             <Button
@@ -76,15 +95,6 @@ export function IndexFooter({
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Reset
-            </Button>
-          )}
-          {completedTasks.length > 0 && (
-            <Button
-              variant="secondary"
-              onClick={handleToggleShowCompleted}
-              className="text-xs px-3 py-1.5 h-auto"
-            >
-              {state.showCompleted ? "Hide" : "Show"}
             </Button>
           )}
           {canFinishTask && (
