@@ -33,9 +33,8 @@ export function IndexTasks() {
             <h2 className="text-2xl font-bold text-Black-700 flex items-center gap-1.5">
               <button
                 type="button"
-                className="text-Black-400 hover:text-Black-600 transition-colors focus:outline-none focus:ring-2 focus:ring-Black-400 focus:ring-offset-2 rounded px-1"
+                className="text-Black-400 hover:text-Black-600 transition-colors focus:outline-none focus:ring-2 focus:ring-Blue-500 focus:ring-offset-2 rounded px-1"
                 onClick={handleExitSubtasks}
-                aria-label="Go back to tasks list"
               >
                 Tasks
               </button>
