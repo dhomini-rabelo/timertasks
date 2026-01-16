@@ -28,29 +28,30 @@ export function IndexTasks() {
   return (
     <Box className="w-full max-w-[600px] mx-auto p-6 flex flex-col gap-8">
       <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-bold text-Black-700 flex items-center gap-1.5">
-          {listingMode === "subtasks" && activeTask ? (
-            <>
-              <span
-                className="text-Black-400 cursor-pointer hover:text-Black-100 transition-colors"
+        {listingMode === "subtasks" && activeTask ? (
+          <nav aria-label="Breadcrumb">
+            <h2 className="text-2xl font-bold text-Black-700 flex items-center gap-1.5">
+              <button
+                className="text-Black-400 hover:text-Black-600 transition-colors focus:outline-none focus:ring-2 focus:ring-Black-400 focus:ring-offset-2 rounded px-1"
                 onClick={handleExitSubtasks}
+                aria-label="Go back to tasks list"
               >
                 Tasks
-              </span>
-              <span className="text-Black-300">/</span>
+              </button>
+              <span className="text-Black-300" aria-hidden="true">/</span>
               <span
-                className="truncate max-w-[350px] text-xl"
+                className="truncate max-w-[400px]"
                 title={activeTask.title}
               >
                 {activeTask.title}
               </span>
-            </>
-          ) : listingMode === "tasks-group" ? (
-            "Task Groups"
-          ) : (
-            "Tasks"
-          )}
-        </h2>
+            </h2>
+          </nav>
+        ) : (
+          <h2 className="text-2xl font-bold text-Black-700">
+            {listingMode === "tasks-group" ? "Task Groups" : "Tasks"}
+          </h2>
+        )}
         <p className="text-Black-300 text-sm">
           Manage your daily tasks efficiently, keep track of debugging time, and
           avoid wasting time on easy tasks.
