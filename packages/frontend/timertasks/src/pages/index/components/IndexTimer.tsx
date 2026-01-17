@@ -3,6 +3,7 @@ import { SECONDS_PER_MINUTE } from "../../../code/utils/date";
 import { Button } from "../../../layout/components/atoms/Button";
 import { Timer } from "../../../layout/components/common/Timer";
 import { useCountdownTimerState } from "../states/countdownTimer";
+import { UpdateTimerDialog } from "./UpdateTimerDialog";
 
 export function IndexTimer() {
   const start = useCountdownTimerState((store) => store.actions.start);
@@ -18,6 +19,7 @@ export function IndexTimer() {
   );
   const hasTimerStarted =
     currentTimeInSeconds !== initialMinutes * SECONDS_PER_MINUTE;
+  const shouldShowSettingsButton = !isRunning && !isResting && !hasTimerStarted;
 
   return (
     <div className="w-64">
@@ -53,6 +55,8 @@ export function IndexTimer() {
                   ? "Resume"
                   : "Start"}
             </Button>
+
+            {shouldShowSettingsButton ? <UpdateTimerDialog /> : null}
 
             {hasTimerStarted && (
               <Button

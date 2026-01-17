@@ -2,7 +2,9 @@ import { addSeconds, differenceInMilliseconds } from "date-fns";
 import { create } from "zustand";
 
 interface CountdownTimerState {
+  activityMinutes: number;
   initialMinutes: number;
+  restMinutes: number;
   currentTimeInSeconds: number;
   isRunning: boolean;
   totalCycles: number;
@@ -13,6 +15,7 @@ interface CountdownTimerActions {
   start: () => void;
   stop: () => void;
   reset: () => void;
+  updateActivityMinutes: (activityMinutes: number) => void;
 }
 
 interface CountdownTimerStore {
@@ -22,8 +25,13 @@ interface CountdownTimerStore {
 
 const secondsPerMinute = 60;
 const millisecondsPerSecond = 1000;
-const initialMinutes = 25;
-const restMinutes = 5;
+const initialActivityMinutes = 25;
+
+function getRestMinutes(activityMinutes: number) {
+  return activityMinutes * 0.2;
+}
+
+const initialRestMinutes = getRestMinutes(initialActivityMinutes);
 
 const intervalRef: { current: ReturnType<typeof setInterval> | null } = {
   current: null,
@@ -52,7 +60,10 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
     function setState(partial: Partial<CountdownTimerState>) {
       set((store) => ({
         state: {
+          activityMinutes:
+            partial.activityMinutes ?? store.state.activityMinutes,
           initialMinutes: partial.initialMinutes ?? store.state.initialMinutes,
+          restMinutes: partial.restMinutes ?? store.state.restMinutes,
           currentTimeInSeconds:
             partial.currentTimeInSeconds ?? store.state.currentTimeInSeconds,
           isRunning: partial.isRunning ?? store.state.isRunning,
@@ -94,14 +105,16 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
         if (millisecondsLeft <= 0) {
           const storeSnapshot = get();
           const isResting = storeSnapshot.state.isResting;
+          const activityMinutes = storeSnapshot.state.activityMinutes;
+          const restMinutes = storeSnapshot.state.restMinutes;
 
           stop();
           playAlertSound();
 
           if (isResting) {
             setState({
-              initialMinutes,
-              currentTimeInSeconds: initialMinutes * secondsPerMinute,
+              initialMinutes: activityMinutes,
+              currentTimeInSeconds: activityMinutes * secondsPerMinute,
               isResting: false,
             });
             return;
@@ -145,6 +158,7 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
     }
 
     function reset() {
+      const store = get();
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -152,10 +166,31 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
 
       endTimeRef.current = null;
 
-      const initialSeconds = initialMinutes * secondsPerMinute;
+      const initialSeconds = store.state.activityMinutes * secondsPerMinute;
 
       setState({
-        initialMinutes,
+        initialMinutes: store.state.activityMinutes,
+        currentTimeInSeconds: initialSeconds,
+        isRunning: false,
+        isResting: false,
+      });
+    }
+
+    function updateActivityMinutes(activityMinutes: number) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      endTimeRef.current = null;
+
+      const restMinutes = getRestMinutes(activityMinutes);
+      const initialSeconds = activityMinutes * secondsPerMinute;
+
+      setState({
+        activityMinutes,
+        restMinutes,
+        initialMinutes: activityMinutes,
         currentTimeInSeconds: initialSeconds,
         isRunning: false,
         isResting: false,
@@ -164,8 +199,10 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
 
     return {
       state: {
-        initialMinutes,
-        currentTimeInSeconds: initialMinutes * secondsPerMinute,
+        activityMinutes: initialActivityMinutes,
+        initialMinutes: initialActivityMinutes,
+        restMinutes: initialRestMinutes,
+        currentTimeInSeconds: initialActivityMinutes * secondsPerMinute,
         isRunning: false,
         totalCycles: 0,
         isResting: false,
@@ -174,6 +211,7 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
         start,
         stop,
         reset,
+        updateActivityMinutes,
       },
     };
   },
