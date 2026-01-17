@@ -201,6 +201,8 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
         totalCycles: completedCycles,
         extraAddedMinutes: 0,
       });
+
+      start();
     }
 
     function addExtraTime(minutes: number) {
@@ -216,6 +218,8 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
         isResting: false,
         extraAddedMinutes: newExtra,
       });
+
+      start();
     }
 
     return {
