@@ -1,4 +1,4 @@
-import { RotateCcw } from "lucide-react";
+import { ArrowRight, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { SECONDS_PER_MINUTE } from "../../../code/utils/date";
 import { Button } from "../../../layout/components/atoms/Button";
@@ -95,6 +95,16 @@ export function IndexTimer() {
                     }}
                   >
                     +10 min
+                  </Button>
+                  <Button
+                    className="w-full py-2 text-base font-medium"
+                    variant="primary"
+                    onClick={() => {
+                      reset();
+                      start();
+                    }}
+                  >
+                    Skip <ArrowRight size={20} />
                   </Button>
                 </div>
               </>
