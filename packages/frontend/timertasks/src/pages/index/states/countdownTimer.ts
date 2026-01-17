@@ -22,13 +22,30 @@ interface CountdownTimerStore {
 
 const secondsPerMinute = 60;
 const millisecondsPerSecond = 1000;
-const initialMinutes = 1;
-const restMinutes = 1;
+const initialMinutes = 25;
+const restMinutes = 5;
 
 const intervalRef: { current: ReturnType<typeof setInterval> | null } = {
   current: null,
 };
 const endTimeRef: { current: Date | null } = { current: null };
+
+function playAlertSound() {
+  const alarmAudio = new Audio("/car-alarm.mp3");
+  const restartPositionInSeconds = 0;
+  alarmAudio.currentTime = restartPositionInSeconds;
+  alarmAudio
+    .play()
+    .catch(() => {})
+    .then(() => {
+      new Notification("Timer Alert", {
+        icon: "/logo.svg",
+        body: "Countdown finished.",
+        requireInteraction: false,
+        silent: true,
+      });
+    });
+}
 
 export const useCountdownTimerState = create<CountdownTimerStore>(
   (set, get) => {
@@ -79,6 +96,7 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
           const isResting = storeSnapshot.state.isResting;
 
           stop();
+          playAlertSound();
 
           if (isResting) {
             setState({
