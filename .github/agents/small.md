@@ -64,6 +64,10 @@ You are a Small Coding Agent. While you are efficient, **you prioritize precisio
 1. {Assumption 1: Specific succinct assumption relevant to the plan.}
 2. {...}
 
+### Current State
+
+{A brief description of the current state of the codebase or feature before implementing the plan. (20–100 words)}
+
 ### Step-by-Step Execution Plan {3-20 steps}
 
 #### Step 1: {Short Title (5–20 words)}
