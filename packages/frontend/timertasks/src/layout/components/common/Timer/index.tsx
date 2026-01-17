@@ -4,6 +4,7 @@ interface TimerProps {
   className?: string;
   timerDisplayInSeconds: string;
   initialTimeInMinutes: number;
+  lastExtraAddedMinutes?: number;
   strokeColor?: string;
 }
 
@@ -22,10 +23,15 @@ function getPercentage(totalSeconds: number, currentSeconds: number) {
 function getCircleDashoffset(
   initialTimeInMinutes: number,
   timerDisplayInSeconds: string,
+  lastExtraAddedMinutes?: number,
 ) {
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
-  const totalSeconds = initialTimeInMinutes * 60;
+  const totalMinutes =
+    lastExtraAddedMinutes && lastExtraAddedMinutes > 0
+      ? lastExtraAddedMinutes
+      : initialTimeInMinutes;
+  const totalSeconds = totalMinutes * 60;
   const currentSeconds = Number(timerDisplayInSeconds);
   const percentage = getPercentage(totalSeconds, currentSeconds);
   const strokeDashoffset = circumference - percentage * circumference;
@@ -41,6 +47,7 @@ export function Timer({
   className,
   timerDisplayInSeconds,
   initialTimeInMinutes,
+  lastExtraAddedMinutes,
   strokeColor,
 }: TimerProps) {
   const minutesLeft = Math.floor(Number(timerDisplayInSeconds) / 60)
@@ -52,6 +59,7 @@ export function Timer({
   const { radius, circumference, strokeDashoffset } = getCircleDashoffset(
     initialTimeInMinutes,
     timerDisplayInSeconds,
+    lastExtraAddedMinutes,
   );
   const circleStrokeColor = strokeColor ?? "var(--color-Green-400)";
 

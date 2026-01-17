@@ -1,4 +1,5 @@
 import { RotateCcw } from "lucide-react";
+import { useState } from "react";
 import { SECONDS_PER_MINUTE } from "../../../code/utils/date";
 import { Button } from "../../../layout/components/atoms/Button";
 import { Timer } from "../../../layout/components/common/Timer";
@@ -21,6 +22,12 @@ export function IndexTimer() {
   const initialMinutes = useCountdownTimerState(
     (store) => store.state.initialMinutes,
   );
+  const extraAddedMinutes = useCountdownTimerState(
+    (store) => store.state.extraAddedMinutes,
+  );
+  const [lastExtraAddedMinutes, setLastExtraAddedMinutes] = useState<
+    number | undefined
+  >(undefined);
   const hasTimerStarted =
     currentTimeInSeconds !== initialMinutes * SECONDS_PER_MINUTE;
   const isFinished = currentTimeInSeconds === 0 && !isRunning;
@@ -33,6 +40,9 @@ export function IndexTimer() {
         className="w-full h-64 text-6xl"
         timerDisplayInSeconds={currentTimeInSeconds.toString()}
         initialTimeInMinutes={initialMinutes}
+        lastExtraAddedMinutes={
+          extraAddedMinutes > 0 ? lastExtraAddedMinutes : undefined
+        }
         strokeColor={
           isResting ? "var(--color-Blue-400)" : "var(--color-Green-400)"
         }
@@ -69,14 +79,20 @@ export function IndexTimer() {
                   <Button
                     className="w-full py-2 text-base font-medium"
                     variant="primary"
-                    onClick={() => addExtraTime(1)}
+                    onClick={() => {
+                      addExtraTime(1);
+                      setLastExtraAddedMinutes(1);
+                    }}
                   >
                     +5 min
                   </Button>
                   <Button
                     className="w-full py-2 text-base font-medium"
                     variant="primary"
-                    onClick={() => addExtraTime(10)}
+                    onClick={() => {
+                      addExtraTime(10);
+                      setLastExtraAddedMinutes(10);
+                    }}
                   >
                     +10 min
                   </Button>
