@@ -9,6 +9,10 @@ export function IndexTimer() {
   const start = useCountdownTimerState((store) => store.actions.start);
   const stop = useCountdownTimerState((store) => store.actions.stop);
   const reset = useCountdownTimerState((store) => store.actions.reset);
+  const goToRest = useCountdownTimerState((store) => store.actions.goToRest);
+  const addExtraTime = useCountdownTimerState(
+    (store) => store.actions.addExtraTime,
+  );
   const currentTimeInSeconds = useCountdownTimerState(
     (store) => store.state.currentTimeInSeconds,
   );
@@ -19,7 +23,9 @@ export function IndexTimer() {
   );
   const hasTimerStarted =
     currentTimeInSeconds !== initialMinutes * SECONDS_PER_MINUTE;
-  const shouldShowSettingsButton = !isRunning && !isResting && !hasTimerStarted;
+  const isFinished = currentTimeInSeconds === 0 && !isRunning;
+  const shouldShowSettingsButton =
+    !isRunning && !isResting && !hasTimerStarted && !isFinished;
 
   return (
     <div className="w-64">
@@ -40,6 +46,44 @@ export function IndexTimer() {
           >
             Stop
           </Button>
+        ) : isFinished ? (
+          <div className="flex flex-col gap-2 w-full">
+            {isResting ? (
+              <Button
+                className="w-full py-2 text-base font-medium"
+                variant="primary"
+                onClick={reset}
+              >
+                Back to Work
+              </Button>
+            ) : (
+              <>
+                <Button
+                  className="w-full py-2 text-base font-medium"
+                  variant="primary"
+                  onClick={goToRest}
+                >
+                  Rest
+                </Button>
+                <div className="flex gap-2 w-full">
+                  <Button
+                    className="flex-1 py-1 text-sm font-medium"
+                    variant="secondary"
+                    onClick={() => addExtraTime(1)}
+                  >
+                    +5 min
+                  </Button>
+                  <Button
+                    className="flex-1 py-1 text-sm font-medium"
+                    variant="secondary"
+                    onClick={() => addExtraTime(10)}
+                  >
+                    +10 min
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
         ) : (
           <div className="flex gap-2 w-full">
             <Button

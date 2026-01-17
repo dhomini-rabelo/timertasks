@@ -9,6 +9,7 @@ interface CountdownTimerState {
   isRunning: boolean;
   totalCycles: number;
   isResting: boolean;
+  extraAddedMinutes: number;
 }
 
 interface CountdownTimerActions {
@@ -16,6 +17,8 @@ interface CountdownTimerActions {
   stop: () => void;
   reset: () => void;
   updateActivityMinutes: (activityMinutes: number) => void;
+  goToRest: () => void;
+  addExtraTime: (minutes: number) => void;
 }
 
 interface CountdownTimerStore {
@@ -25,7 +28,7 @@ interface CountdownTimerStore {
 
 const secondsPerMinute = 60;
 const millisecondsPerSecond = 1000;
-const initialActivityMinutes = 25;
+const initialActivityMinutes = 1;
 
 function getRestMinutes(activityMinutes: number) {
   return activityMinutes * 0.2;
@@ -69,6 +72,8 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
           isRunning: partial.isRunning ?? store.state.isRunning,
           totalCycles: partial.totalCycles ?? store.state.totalCycles,
           isResting: partial.isResting ?? store.state.isResting,
+          extraAddedMinutes:
+            partial.extraAddedMinutes ?? store.state.extraAddedMinutes,
         },
         actions: store.actions,
       }));
@@ -103,30 +108,11 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
         );
 
         if (millisecondsLeft <= 0) {
-          const storeSnapshot = get();
-          const isResting = storeSnapshot.state.isResting;
-          const activityMinutes = storeSnapshot.state.activityMinutes;
-          const restMinutes = storeSnapshot.state.restMinutes;
-
           stop();
           playAlertSound();
 
-          if (isResting) {
-            setState({
-              initialMinutes: activityMinutes,
-              currentTimeInSeconds: activityMinutes * secondsPerMinute,
-              isResting: false,
-            });
-            return;
-          }
-
-          const completedCycles = storeSnapshot.state.totalCycles + 1;
-
           setState({
-            initialMinutes: restMinutes,
-            currentTimeInSeconds: restMinutes * secondsPerMinute,
-            isResting: true,
-            totalCycles: completedCycles,
+            currentTimeInSeconds: 0,
           });
           return;
         }
@@ -173,6 +159,7 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
         currentTimeInSeconds: initialSeconds,
         isRunning: false,
         isResting: false,
+        extraAddedMinutes: 0,
       });
     }
 
@@ -194,6 +181,40 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
         currentTimeInSeconds: initialSeconds,
         isRunning: false,
         isResting: false,
+        extraAddedMinutes: 0,
+      });
+    }
+
+    function goToRest() {
+      const store = get();
+      const completedCycles = store.state.totalCycles + 1;
+
+      const baseRest = getRestMinutes(store.state.activityMinutes);
+      const extraRest = store.state.extraAddedMinutes * 0.2;
+      const restMinutes = baseRest + extraRest;
+
+      setState({
+        restMinutes,
+        initialMinutes: restMinutes,
+        currentTimeInSeconds: restMinutes * secondsPerMinute,
+        isResting: true,
+        totalCycles: completedCycles,
+        extraAddedMinutes: 0,
+      });
+    }
+
+    function addExtraTime(minutes: number) {
+      const store = get();
+      const newExtra = store.state.extraAddedMinutes + minutes;
+      const newInitial = store.state.initialMinutes + minutes;
+      const newCurrent =
+        store.state.currentTimeInSeconds + minutes * secondsPerMinute;
+
+      setState({
+        initialMinutes: newInitial,
+        currentTimeInSeconds: newCurrent,
+        isResting: false,
+        extraAddedMinutes: newExtra,
       });
     }
 
@@ -206,12 +227,15 @@ export const useCountdownTimerState = create<CountdownTimerStore>(
         isRunning: false,
         totalCycles: 0,
         isResting: false,
+        extraAddedMinutes: 0,
       },
       actions: {
         start,
         stop,
         reset,
         updateActivityMinutes,
+        goToRest,
+        addExtraTime,
       },
     };
   },
