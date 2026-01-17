@@ -23,9 +23,9 @@ export function Button({
   return (
     <button
       className={twMerge(
-        "flex items-center justify-center gap-[10px] px-16 py-4 rounded-[12px] font-bold text-sm leading-[1.2] cursor-pointer transition-colors",
+        "flex items-center justify-center gap-2.5 px-16 py-4 rounded-xl font-bold text-sm leading-[1.2] cursor-pointer transition-colors",
         variantStyles[variant],
-        className
+        className,
       )}
       {...props}
     >

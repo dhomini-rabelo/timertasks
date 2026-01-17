@@ -4,6 +4,7 @@ interface TimerProps {
   className?: string;
   timerDisplayInSeconds: string;
   initialTimeInMinutes: number;
+  strokeColor?: string;
 }
 
 function getPercentage(totalSeconds: number, currentSeconds: number) {
@@ -20,7 +21,7 @@ function getPercentage(totalSeconds: number, currentSeconds: number) {
 
 function getCircleDashoffset(
   initialTimeInMinutes: number,
-  timerDisplayInSeconds: string
+  timerDisplayInSeconds: string,
 ) {
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
@@ -40,6 +41,7 @@ export function Timer({
   className,
   timerDisplayInSeconds,
   initialTimeInMinutes,
+  strokeColor,
 }: TimerProps) {
   const minutesLeft = Math.floor(Number(timerDisplayInSeconds) / 60)
     .toString()
@@ -49,14 +51,15 @@ export function Timer({
     .padStart(2, "0");
   const { radius, circumference, strokeDashoffset } = getCircleDashoffset(
     initialTimeInMinutes,
-    timerDisplayInSeconds
+    timerDisplayInSeconds,
   );
+  const circleStrokeColor = strokeColor ?? "var(--color-Green-400)";
 
   return (
     <div
       className={twMerge(
         "relative flex items-center justify-center rounded-full bg-White text-Black-700 font-bold shadow-lg",
-        className
+        className,
       )}
     >
       <svg
@@ -68,7 +71,7 @@ export function Timer({
           cy="50"
           r={radius}
           fill="transparent"
-          stroke="var(--color-Green-400)"
+          stroke={circleStrokeColor}
           strokeWidth="6"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}

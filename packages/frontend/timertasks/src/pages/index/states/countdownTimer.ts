@@ -1,11 +1,12 @@
-import { addSeconds, differenceInMilliseconds } from 'date-fns';
-import { create } from 'zustand';
+import { addSeconds, differenceInMilliseconds } from "date-fns";
+import { create } from "zustand";
 
 interface CountdownTimerState {
   initialMinutes: number;
   currentTimeInSeconds: number;
   isRunning: boolean;
   totalCycles: number;
+  isResting: boolean;
 }
 
 interface CountdownTimerActions {
@@ -21,122 +22,141 @@ interface CountdownTimerStore {
 
 const secondsPerMinute = 60;
 const millisecondsPerSecond = 1000;
-const initialMinutes = 25;
-
+const initialMinutes = 1;
+const restMinutes = 1;
 
 const intervalRef: { current: ReturnType<typeof setInterval> | null } = {
   current: null,
 };
 const endTimeRef: { current: Date | null } = { current: null };
 
-export const useCountdownTimerState = create<CountdownTimerStore>((set, get) => {
-  function setState(partial: Partial<CountdownTimerState>) {
-    set((store) => ({
-      state: {
-        initialMinutes:
-          partial.initialMinutes ?? store.state.initialMinutes,
-        currentTimeInSeconds:
-          partial.currentTimeInSeconds ?? store.state.currentTimeInSeconds,
-        isRunning: partial.isRunning ?? store.state.isRunning,
-        totalCycles: partial.totalCycles ?? store.state.totalCycles,
-      },
-      actions: store.actions,
-    }));
-  }
-
-  function start() {
-    const store = get();
-    if (intervalRef.current) {
-      return;
-    }
-    if (store.state.currentTimeInSeconds <= 0) {
-      return;
+export const useCountdownTimerState = create<CountdownTimerStore>(
+  (set, get) => {
+    function setState(partial: Partial<CountdownTimerState>) {
+      set((store) => ({
+        state: {
+          initialMinutes: partial.initialMinutes ?? store.state.initialMinutes,
+          currentTimeInSeconds:
+            partial.currentTimeInSeconds ?? store.state.currentTimeInSeconds,
+          isRunning: partial.isRunning ?? store.state.isRunning,
+          totalCycles: partial.totalCycles ?? store.state.totalCycles,
+          isResting: partial.isResting ?? store.state.isResting,
+        },
+        actions: store.actions,
+      }));
     }
 
-    endTimeRef.current = addSeconds(
-      new Date(),
-      store.state.currentTimeInSeconds,
-    );
-
-    setState({
-      isRunning: true,
-    });
-
-    intervalRef.current = setInterval(() => {
-      if (!endTimeRef.current) {
+    function start() {
+      const store = get();
+      if (intervalRef.current) {
+        return;
+      }
+      if (store.state.currentTimeInSeconds <= 0) {
         return;
       }
 
-      const millisecondsLeft = differenceInMilliseconds(
-        endTimeRef.current,
+      endTimeRef.current = addSeconds(
         new Date(),
+        store.state.currentTimeInSeconds,
       );
 
-      if (millisecondsLeft <= 0) {
-        const storeSnapshot = get();
-        const completedCycles = storeSnapshot.state.totalCycles + 1;
+      setState({
+        isRunning: true,
+      });
 
-        stop();
+      intervalRef.current = setInterval(() => {
+        if (!endTimeRef.current) {
+          return;
+        }
+
+        const millisecondsLeft = differenceInMilliseconds(
+          endTimeRef.current,
+          new Date(),
+        );
+
+        if (millisecondsLeft <= 0) {
+          const storeSnapshot = get();
+          const isResting = storeSnapshot.state.isResting;
+
+          stop();
+
+          if (isResting) {
+            setState({
+              initialMinutes,
+              currentTimeInSeconds: initialMinutes * secondsPerMinute,
+              isResting: false,
+            });
+            return;
+          }
+
+          const completedCycles = storeSnapshot.state.totalCycles + 1;
+
+          setState({
+            initialMinutes: restMinutes,
+            currentTimeInSeconds: restMinutes * secondsPerMinute,
+            isResting: true,
+            totalCycles: completedCycles,
+          });
+          return;
+        }
+
         setState({
-          currentTimeInSeconds: 0,
-          totalCycles: completedCycles,
+          currentTimeInSeconds: Math.ceil(
+            millisecondsLeft / millisecondsPerSecond,
+          ),
         });
+      }, millisecondsPerSecond);
+    }
+
+    function stop() {
+      const store = get();
+      if (!store.state.isRunning && !intervalRef.current) {
         return;
       }
 
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      endTimeRef.current = null;
+
       setState({
-        currentTimeInSeconds: Math.ceil(
-          millisecondsLeft / millisecondsPerSecond,
-        ),
+        isRunning: false,
       });
-    }, millisecondsPerSecond);
-  }
-
-  function stop() {
-    const store = get();
-    if (!store.state.isRunning && !intervalRef.current) {
-      return;
     }
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+    function reset() {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      endTimeRef.current = null;
+
+      const initialSeconds = initialMinutes * secondsPerMinute;
+
+      setState({
+        initialMinutes,
+        currentTimeInSeconds: initialSeconds,
+        isRunning: false,
+        isResting: false,
+      });
     }
 
-    endTimeRef.current = null;
-
-    setState({
-      isRunning: false,
-    });
-  }
-
-  function reset() {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-
-    endTimeRef.current = null;
-
-    const initialSeconds = get().state.initialMinutes * secondsPerMinute;
-
-    setState({
-      currentTimeInSeconds: initialSeconds,
-      isRunning: false,
-    });
-  }
-
-  return {
-    state: {
-      initialMinutes,
-      currentTimeInSeconds: initialMinutes * secondsPerMinute,
-      isRunning: false,
-      totalCycles: 0,
-    },
-    actions: {
-      start,
-      stop,
-      reset,
-    },
-  };
-});
+    return {
+      state: {
+        initialMinutes,
+        currentTimeInSeconds: initialMinutes * secondsPerMinute,
+        isRunning: false,
+        totalCycles: 0,
+        isResting: false,
+      },
+      actions: {
+        start,
+        stop,
+        reset,
+      },
+    };
+  },
+);

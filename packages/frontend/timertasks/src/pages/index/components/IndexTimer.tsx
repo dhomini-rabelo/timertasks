@@ -27,11 +27,12 @@ export function IndexTimer() {
   const stop = useCountdownTimerState((store) => store.actions.stop);
   const reset = useCountdownTimerState((store) => store.actions.reset);
   const currentTimeInSeconds = useCountdownTimerState(
-    (store) => store.state.currentTimeInSeconds
+    (store) => store.state.currentTimeInSeconds,
   );
   const isRunning = useCountdownTimerState((store) => store.state.isRunning);
+  const isResting = useCountdownTimerState((store) => store.state.isResting);
   const initialMinutes = useCountdownTimerState(
-    (store) => store.state.initialMinutes
+    (store) => store.state.initialMinutes,
   );
   const hasTimerStarted =
     currentTimeInSeconds !== initialMinutes * SECONDS_PER_MINUTE;
@@ -49,6 +50,9 @@ export function IndexTimer() {
         className="w-full h-64 text-6xl"
         timerDisplayInSeconds={currentTimeInSeconds.toString()}
         initialTimeInMinutes={initialMinutes}
+        strokeColor={
+          isResting ? "var(--color-Blue-400)" : "var(--color-Green-400)"
+        }
       />
       <div className="pt-4 flex flex-col gap-4 px-8">
         {isRunning ? (
@@ -63,10 +67,16 @@ export function IndexTimer() {
           <div className="flex gap-2 w-full">
             <Button
               className="flex-1 py-2 text-base font-medium"
-              variant="primary"
+              variant={isResting ? "secondary" : "primary"}
               onClick={start}
             >
-              {hasTimerStarted ? "Resume" : "Start"}
+              {isResting
+                ? hasTimerStarted
+                  ? "Resume"
+                  : "Rest"
+                : hasTimerStarted
+                  ? "Resume"
+                  : "Start"}
             </Button>
 
             {hasTimerStarted && (
