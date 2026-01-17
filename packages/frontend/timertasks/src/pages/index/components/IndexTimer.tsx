@@ -58,24 +58,24 @@ export function IndexTimer() {
               </Button>
             ) : (
               <>
-                <Button
-                  className="w-full py-2 text-base font-medium"
-                  variant="primary"
-                  onClick={goToRest}
-                >
-                  Rest
-                </Button>
-                <div className="flex gap-2 w-full">
+                <div className="flex flex-col gap-2 w-full">
                   <Button
-                    className="flex-1 py-1 text-sm font-medium"
+                    className="w-full py-2 text-base font-medium"
                     variant="secondary"
+                    onClick={goToRest}
+                  >
+                    Rest
+                  </Button>
+                  <Button
+                    className="w-full py-2 text-base font-medium"
+                    variant="primary"
                     onClick={() => addExtraTime(1)}
                   >
                     +5 min
                   </Button>
                   <Button
-                    className="flex-1 py-1 text-sm font-medium"
-                    variant="secondary"
+                    className="w-full py-2 text-base font-medium"
+                    variant="primary"
                     onClick={() => addExtraTime(10)}
                   >
                     +10 min
